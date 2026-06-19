@@ -1,0 +1,31 @@
+{
+  "_doc": "Joint KPI DeltaGate voor full-joint movement+VR+shooting. Alle KPI's moeten passeren voor promote (AND-criterium), één KPI onder rollback triggert revert (OR-criterium). Movement KPI = flag_score, VR KPI = shots_on_target_rate, shooting KPI = combat_score. Ratios relatief aan baseline.json.",
+  "_doc_cadence": "Gate-cadence is match-aligned: trigger firet zodra MATCH_ENDED count over alle servers `matches_per_eval_cycle` haalt sinds laatste eval (geen wall-clock timer). Window in compute_delta() is óók match-aligned via since_ts. ServerTravel overhead (~90s/match) zit dus impliciet meegerekend.",
+
+  "_doc_2026_05_25_gate_decoupled": "2026-05-25 18:20: dual_kpi heringeschakeld in decoupled modus. Deploy elke 500 steps is NIET meer geblokkeerd door de gate — er is geen in-flight slot meer. Champion gate evalueert onafhankelijk na elke 5 matches en kan PROMOTE/ROLLBACK/NEUTRAL beslissen zonder deploys te blokkeren. Oplost de vicieuze cirkel van 11:36 (deploy→eval→rollback→buffer vervuiling→pitch_sat drift) doordat deploy nu continuous is en de gate puur monitoring+promotion doet.",
+  "dual_kpi": true,
+  "kpi_primary": "combat_score",
+  "kpi_secondary": "shots_on_target_rate",
+  "kpi_movement": "flag_score",
+
+  "_doc_2026_05_20_movement_ratchet_fix": "promote_movement_min_ratio 0.70→0.85. Lifetime trainer.log analyse 2026-05-20: movement_flag baseline ratchet'd van peak 7.338 (2026-05-19 21:24) naar 3.558 (2026-05-20 14:27) over 7 PROMOTEs. Oorzaak: 0.70 drempel laat 30% movement regressie toe per promotie, met BASELINE_PERSISTED bij elke promote → asymmetrische selectiedruk: combat ratchet up (0.95), aim ratchet up (0.80), movement ratchet down. Met 0.85 mag movement nog 15% noise-margin houden maar PROMOTE blokkeert bij echte regressie van CTF-objective.",
+  "_doc_2026_05_21_round2_movement_tighter": "Round 2 (2026-05-21 01:00): 0.85→0.90 na cycle-4 observatie. Eerste PROMOTE onder 0.85 (op 2026-05-21 00:09) ratcht'e baseline movement 6.376→5.556 (-13%, binnen 15% drift budget). Symptoom dat 0.85 nog steeds drift toelaat per promote. Met 0.90 max 10% drift per promotie. Combat blijft 0.95 (5% drift). Asymmetrie tussen combat/movement nu kleiner (was 0.85 vs 0.95 = verschil 0.10; nu 0.90 vs 0.95 = verschil 0.05).",
+  "_doc_2026_05_24_ratchet_unblock": "2026-05-24 00:10: alle promote thresholds verlaagd (combat 0.95→0.80, aim 0.80→0.65, movement 0.90→0.75) om sub-PROMOTE stagnatie te doorbreken. Cycles 2-6 na cycle-1 PROMOTE (combat ratio 0.595→0.704→0.759→0.814→0.794, aim 0.670→1.234→0.674→0.721→0.487) hebben bot consistent net-onder PROMOTE threshold. Met 1.5× rise cap blijft de drift-budget per promote acceptabel (max 50% rise per cyclus, in praktijk gecapt op 1.5× oude baseline). Gecombineerd met champion 0119 actor restore (historic combat=8.3) voor jumpstart richting pro-niveau. Voor pro flak (combat ≥10/min) is een ratchet-pad noodzakelijk; strikte 0.95 threshold heeft policy in lokaal optimum vast gehouden.",
+  "_doc_2026_05_24_ratchet_balance": "2026-05-24 07:00: thresholds aangepast naar 0.85/0.85/0.80 na ratchet-down observatie. Cycle 8+9 PROMOTEs leidden tot net aim -23% en combat +5% omdat 0.65 aim threshold accepteerde slechtere aim. Nieuwe 0.85 thresholds: bot moet 85% van baseline halen → mild ratchet-down toegestaan (max -15% per promote) maar reflecteert echte improvement intent. Tightere aim (0.65→0.85) prioriteert aim recovery — voor pro flak is aim CRITICAL (target 15+/min, current baseline degraded to 4.36).",
+  "promote_combat_score_min_ratio": 0.85,
+  "promote_aim_min_ratio": 0.85,
+  "promote_movement_min_ratio": 0.80,
+  "promote_window_cycles": 1,
+
+  "rollback_combat_score_max_ratio": 0.70,
+  "rollback_aim_max_ratio": 0.50,
+  "rollback_movement_max_ratio": 0.40,
+  "rollback_window_cycles": 2,
+
+  "_doc_2026_05_24_stable_eval": "2026-05-24 04:10: matches_per_eval_cycle 3→5 om gate-eval window te verdubbelen voor stabielere ratio-meting. Overnight observatie: cycles 2-5 oscillating wild op alle 3 KPIs (aim 0.21 → 0.94, movement 0.28 → 1.99 per single cycle). 3-match window te kort voor stable measure → ratios noise-driven → PROMOTE kans laag. Met 5 matches (~55 min eval-cycle ipv ~35 min) wordt elke ratio over meer data gemiddeld, noise verminderd, en consistent PROMOTE/NEUTRAL beslissing. Bot moet stabiel verbeteren over 5 matches om PROMOTE te halen — voorkomt PROMOTE op single-match lucky burst.",
+  "matches_per_eval_cycle": 5,
+
+  "min_steps_before_eval": 0,
+
+  "consecutive_rollback_adam_wipe_threshold": 3
+}

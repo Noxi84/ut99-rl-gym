@@ -1,0 +1,8 @@
+{
+  "_doc": "Lijst van geregistreerde model-keys. RootConfigLoader / PropertyReader laden alleen modellen die hier vermeld zijn (uit resources/models/<model_key>/). De joint rl_pawn policy is de enige low-level policy in productie.",
+  "models": [
+    {
+      "model_key": "rl_pawn"
+    }
+  ]
+}

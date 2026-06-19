@@ -1,0 +1,69 @@
+{
+  "map_id" : 0,
+  "symmetric" : true,
+  "geodesic_field" : false,
+  "spawn_points" : [
+    {
+      "location" : [
+        -393.545,
+        -904.814,
+        -959.895
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -402.527,
+        911.761,
+        -959.899
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        369.069,
+        -853.026,
+        -959.903
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        399.388,
+        838.916,
+        -959.895
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        363.779,
+        78.578,
+        -959.895
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -395.874,
+        35.044,
+        -959.895
+      ],
+      "team" : 1
+    }
+  ],
+  "jump_pads" : [ ],
+  "map_norm" : {
+    "bounds_min_x" : -500.0,
+    "bounds_max_x" : 500.0,
+    "bounds_min_y" : -1000.0,
+    "bounds_max_y" : 1000.0,
+    "bounds_min_z" : -1007.0,
+    "bounds_max_z" : 1000.0,
+    "edge" : 0.98,
+    "k" : 3.0
+  },
+  "pickups" : [ ],
+  "movers" : [ ],
+  "elevator_triggers" : [ ]
+}

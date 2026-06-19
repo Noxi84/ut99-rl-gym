@@ -1,0 +1,12 @@
+{
+  "_doc": "Full-joint LSTM topologie voor rl_pawn: movement + viewrotation + shooting in één actor. hidden_size=640 compenseert voor de brede feature set plus 10-dim action head.",
+  "_doc_input_size": "Precieze LSTM input wordt runtime bepaald door PlayerFeatureGrouping; deze file legt alleen de backbone-capaciteit vast.",
+  "hidden_size": 640,
+  "num_layers": 2,
+  "dropout": 0.15,
+  "device": "auto",
+  "player_hidden_dim": 64,
+  "player_embed_dim": 64,
+  "map_embedding_capacity": 256,
+  "map_embedding_dim": 16
+}

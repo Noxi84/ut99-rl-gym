@@ -1,0 +1,732 @@
+{
+  "_doc": "Full-joint reward catalog for the single movement + viewrotation + shooting policy.",
+  "_doc_decomp_mapping": {
+    "owner": "JointRewardDecompositionStrategy",
+    "invariant": "scalar = reward_movement + reward_view + reward_pitch + reward_fire + reward_altFire + residual",
+    "view": [
+      "view_alignment (yaw alignment + acquisition)",
+      "enemy_spawn_attention (yaw alignment naar spawn)",
+      "view_smoothness / 2 (yaw deel — gewogen view_smoothness_weight)"
+    ],
+    "pitch": [
+      "pitch_alignment (alignment + acquisition + extreme_penalty)",
+      "view_smoothness / 2 (pitch deel — gewogen view_smoothness_weight)"
+    ],
+    "fire": [
+      "shot_on_target (primary mode)",
+      "shot_off_target (primary mode)",
+      "primary_fire_aim (sustained primary shaping)",
+      "projectile_aim (default — alt grenades meegerekend hier omdat ProjectileAimReward mode-agnostisch is)",
+      "enemy_killed_by_fire (default fire — mode-ambiguous warning bij eerste niet-nul)",
+      "frag (kill credit — default primary fire)",
+      "flag_carrier_kill (default primary fire)",
+      "flag_carrier_kill_near_base (default primary fire)",
+      "fire_holding_penalty (primary onset)",
+      "fire_penalty (per shot tax + missed_opportunity — fire decision)",
+      "fire_cooldown_penalty (fire decision)",
+      "damage_dealt (default primary — mode-tag absent in DamageDeltaReward)",
+      "self_damage (unsafe shot / ricochet / splash feedback — attributed to fire)",
+      "friendly_fire (default primary — same mode-default als damageDealt)",
+      "ammo_consumption_penalty (default primary — weapon_state niet in breakdown)"
+    ],
+    "altFire": [
+      "shot_on_target_alt",
+      "shot_off_target_alt",
+      "fire_holding_penalty_alt"
+    ],
+    "residual": [
+      "death and generic damage_taken where no single actor skill owns the full cause"
+    ],
+    "movement": [
+      "flag_event objective events",
+      "objective_progress, speed, facing, enemy_spacing",
+      "movement_action collision/stuck/dodge/idle rewards",
+      "score_gain_rate and flak_avoidance movement shaping"
+    ]
+  },
+  "weights": {
+    "view_alignment_weight": 0.1,
+    "pitch_alignment_weight": 1.0,
+    "view_smoothness_weight": 1.0,
+    "shot_event_weight": 5.0,
+    "damage_delta_weight": 1.0,
+    "ammo_consumption_weight": 1.0,
+    "combat_event_weight": 1.0,
+    "frag_weight": 1.0,
+    "flag_event_weight": 1.0,
+    "_doc_pickup_event_weight": "Joint pickup-awareness sparse rewards (shieldbelt/armor/thighpads/amp/megahealth). Delta-based capped op nominale waarde: reward = min(Δhp+Δarmor, cap[type]) × weight. Amp (UDamage) is flat want geen Δhp/Δarmor te meten. Per-type weights staan in rewardgroups.default.rewards.pickup_event hieronder.",
+    "pickup_event_weight": 1.0
+  },
+  "match_duration": 60000.0,
+  "projectile_speed_flak_primary_uu": 2700.0,
+  "projectile_speed_flak_secondary_uu": 1200.0,
+  "_doc_rocket_primary_aim_target_height_uu": "Verticale offset (UU) bovenop enemy.location.z waar rocket primary (RLEightball/UT_Eightball) op mikt. CORRECTIE 2026-05-29: enemy.location.z is NIET de voet maar het collision-cylinder CENTRUM — de UC stuurt rauw P.Location.Z en de engine rekent zelf FootZ = Location.Z - CollisionHeight (RLUdpStateSender.uc:1168; CollisionHeight=39 voor TournamentPlayer). Dus 0.0 = enemy romp/centrum (~39 UU boven de vloer) → rocket detoneert op torso-hoogte, NIET op de grond (oude gedrag). -40.0 ≈ -CollisionHeight = enemy-voet/vloer → rocket detoneert op de grond onder/voor de enemy: maximum splash + dodge-proof (raakt ook een strafende/springende enemy en blokkeert een aanstormende EFC). +baseEyeHeight (~+27) zou eye-aim reproduceren. Alleen primary fire — alt-fire grenades houden hun eigen ballistic/lob solver. Beïnvloedt FireModeAimTargeting.computeAimSolution voor zowel pitch_alignment/acquisition als computeAimScore3D (shot_on_target/fire_holding). Per-shot damage daalt licht (HurtRadius-falloff vs perfecte body-hit) maar hit-betrouwbaarheid stijgt sterk; doel = sneller killen via meer rake schoten + EFC-blokkade.",
+  "rocket_primary_aim_target_height_uu": -40.0,
+  "_doc_sniper_primary_aim_target_height_uu": "Verticale offset (UU) bovenop enemy.location.z waar Sniper primary (Botpack.SniperRifle) op mikt. enemy.location.z is het collision-cylinder-CENTRUM (CollisionHeight=39 voor TournamentPlayer, half-height). UT99's headshot/decap-zone (SniperRifle.uc: HitLocation.Z - Location.Z > 0.62*CollisionHeight) begint op ~+24.2 UU en de cilinder-top zit op +39; een hit dáár doet 100 HP met damage-name 'Decapitated' i.p.v. 45 HP body ('shot'). Default 31.0 = head-center (ruim in de decap-zone, ~+6.8 UU marge boven de grens, onder de top) zodat de viewrotation-rewards (pitch_alignment + acquisition + de 3D view-precision) de aim recht op het hoofd trekken i.p.v. de standaard eye-height (+27 = baseEyeHeight, net aan de onderrand van de zone). Dispatcht per gedragen wapenclass via FireModeAimTargeting.aimTarget → ALLEEN actief wanneer de bot de SniperRifle vasthoudt; elk ander wapen (flak/shock/rocket/...) blijft op eye-height = ongewijzigd. Propageert ook naar de primaryAimPitchError-feature (ShootingIntentFeatureComponent) zodat de bot dezelfde aim-error ziet die beloond wordt. Werkt samen met de kleine damage_delta.headshot_bonus (de outcome-bonus bij een geslaagde decap). Tunable; verhoog richting de top voor meer marge, verlaag richting +27 om eye-aim te reproduceren.",
+  "sniper_primary_aim_target_height_uu": 31.0,
+  "_doc_pitch_alignment_curriculum": "Handmatig-switchbare decay schedule voor pitch_alignment_weight. Doel: prescription (statische aim-target trekkracht) geleidelijk afbouwen zodat outcome-rewards (damage_dealt, projectile_aim, shot_on_target) de leiding nemen → pro-niveau aim policy. Geen auto-progression: gebruiker switcht 'active_phase' tussen cycles op basis van DeltaGate promotion + observatie. Effectieve weight = weights.pitch_alignment_weight × phases[active_phase].weight_multiplier. Acquisition (PBRS) en extreme_penalty (ceiling) blijven ongemoeid — alleen de heuristic alignment-cost wordt geschaald. Reversibel: bij regressie kan terug naar warmup.",
+  "pitch_alignment_curriculum": {
+    "_doc_active_phase_outcome_shift": "Round 10 (Phase A, 2026-05-29): warmup→decay1 (multiplier 1.0→0.5). Start van de heuristic-decay (outcome-reward-shift §6.1/§7): de statische foot-aim-pull (alignment_weight 4.0 × 0.5 = effectief 2.0) wordt afgebouwd zodat outcome (damage_delta) + de lead-features (enemy/relatieve velocity, tti) de aim mogen vormen i.p.v. een bevroren geometrisch mikpunt. Acquisition (PBRS) + extreme_penalty (safety) blijven vol (curriculum schaalt alleen de heuristic alignment-cost). Vervolg: decay1→decay2→outcome over volgende cycles (handmatig, feedback_no_auto_orchestration).",
+    "active_phase": "decay1",
+    "phases": {
+      "warmup": {
+        "weight_multiplier": 1.0,
+        "_doc": "Initial training. Volle prescription pull naar de geconfigureerde aim-target (foot voor rocket primary, eye voor andere wapens). Dense gradient leert het basis-concept van projectile-aim."
+      },
+      "decay1": {
+        "weight_multiplier": 0.5,
+        "_doc": "Halverwege. Damage_dealt + projectile_aim nemen leiding. Bot krijgt meer vrijheid om af te wijken van static target wanneer outcome dat beloont (close-quarter direct hit, lead op moving enemy)."
+      },
+      "decay2": {
+        "weight_multiplier": 0.2,
+        "_doc": "Vrije aim-exploration. Pitch_alignment alleen gentle prior tegen mode-collapse. Bot moet voor de meeste situaties via damage-feedback uitzoeken waar te mikken."
+      },
+      "outcome": {
+        "weight_multiplier": 0.0,
+        "_doc": "Pure outcome learning. Geen statische aim-target meer. Bot leert alleen via damage_dealt + self_damage + projectile_aim + frag/death. Vereist groot sample budget — alleen activeren na decay2 stabilisatie."
+      }
+    }
+  },
+  "_doc_endgame_urgency": "Endgame-catchup ramp shape. Single global tunable (not per-rolegroup) — only the per-role team_assist.weights.endgame_attack_bonus differs between roles. urgency(state) = (signedScoreDiff < 0 ? 1 : 0) × clamp01((rampStart - remaining_time_norm) / (rampStart - rampFull)). At rampStart (default 0.20 = last 20% of match) catchup pressure begins, at rampFull (default 0.05 = last 5%) it reaches max=1.0. Applied to: TeamAssistReward.endgame_attack_bonus (positive pull into enemy half), DefenderPresenceReward and CoverEscortReward via (1 - urgency) multiplier (camping/escort signal fades to zero, removing the brake on attack). Strict deficit chosen — every point behind triggers the same urgency once the ramp kicks in; magnitude scaling is left to the score_diff_norm feature which the policy already sees.",
+  "endgame_urgency": {
+    "ramp_start_remaining_norm": 0.2,
+    "ramp_full_remaining_norm": 0.05
+  },
+  "_doc_weapon_profiles": "Leeg sinds 2026-06-02: combat-shaping is per-wapen zelf-gated op het VASTGEHOUDEN wapen (self.weaponClass), niet via een globale weapon_profile-merge. enemy_spacing gate't op FireModeAimTargeting.isShockRifleClass; de combo-rewards op een eigen Botpack.ShockProj; ViewAlignment/LeadAim dispatchen al per weaponClass. Daardoor krijgt in een gemengd arsenaal elke bot de shaping van zijn eigen wapen (shock-bot -> mid-range prior, flak-bot niet) zonder dat alle bots in dezelfde arena hoeven. weapon_profiles blijft een verplicht (leeg) object zodat JsonRewardCatalog.mergeRewards niet hard faalt. NB: gameplay.json#weapon_profile stuurt nog wel de arena/mutator-keuze (RunUT99ServerActionNode), maar niet langer de rewards.",
+  "weapon_profiles": {
+    "shock": {
+      "_doc": "2026-06-11 (CTF-Face combat-capability fix, GEVALIDEERD): shock-specifieke combat_event-override. Default had shot_on_target_bonus_primary=0.45 < shot_on_target_bonus_alt=0.7 (alt 1.55x meer beloond) + shot_off_target_penalty_alt=0 (missen gratis) → bot spamt altfire-ballen (altFire_rate 0.65 vs fire_rate 0.18) die op Face-afstand missen EN geen combos halen (shockComboEvent=0) → damageDealt=0 → kan niet killen → cowering. Voor shock is de PRIMARY hitscan-beam het betrouwbare afstandswapen (raakt bij cc2~0.78 aim); de bal is enkel combo-opzet. Daarom voor het shock-arena-profiel: primary 0.7 > alt 0.35 (2:1) → policy verschuift naar de beam → hits → combat → kan oprukken/engagen. Wapen-specifiek (weapon_profiles.shock-merge wint van default; flak/rocket/projectile-wapens houden de default 0.45/0.7 want daar IS altfire een hoofdaanval). Reversibel. shock_combo_* rewards blijven (combos niet uitgeschakeld, alleen niet langer via bal-aim over-geincentiveerd).",
+      "rewards": {
+        "combat_event": {
+          "weights": {
+            "shot_on_target_bonus_primary": 0.05,
+            "shot_on_target_bonus_alt": 0.05
+          }
+        },
+        "damage_delta": {
+          "weights": {
+            "taken_per_hp": -0.006
+          },
+          "_doc": "2026-06-11 (Fix E, cowardice-root): shock-specifiek taken_per_hp -0.01875 -> -0.006 (~1/3). De damageTaken-straf (-608/window) was de DOMINANTE negatieve term → cowering (terugtrekken om schade te mijden) was lokaal optimaal; progress-boosts (B/D) braken dat NIET want ze voegen een positieve toe terwijl de dominante negatieve blijft. Dit VERWIJDERT 2/3 van de damage-vrees → samen met progress_scale 0.12 (D) + combat-fix C (kan killen) wordt oprukken+engageren netto lonend. ~1/3 behouden zodat dodge-awareness niet volledig wegvalt. Wapen-specifiek (flak/rocket op default -0.01875). Reversibel. Watch: rukt bot op (objectiveProgress->positief) + niet roekeloos sterven (deaths/selfDamage); te roekeloos -> -0.009, te weinig -> -0.004 of lager. deepFillMissing vult de rest van damage_delta (dealt/self/clamp/etc.) uit default."
+        }
+      }
+    }
+  },
+  "rewardgroups": {
+    "default": {
+      "name": "Default",
+      "rewards": {
+        "flag_event": {
+          "description": "Sparse rewards rond CTF flag-events: oppakken, droppen, scoren (zelf), team-capture (door teamgenoot), enemy-capture (vijand-team scoort onze vlag), eigen-vlag terughalen (zelf), en team-return (door teamgenoot). taken/captured/team_captured/enemy_captured/team_returned worden time-multiplier geschaald. captured/team_captured en returned/team_returned zijn elk mutually exclusive per tick — instigator-attribution via UC ScoreFlag → RLUdpStateSender.RecordFlagReturn (slot ID per tick gedraind). enemy_captured detecteert bHome 0→1 op onze vlag zonder return-instigator én met carrier-in-prev (sluit auto-return na drop-timeout uit) — mutually exclusive met returned/team_returned.",
+          "kind": "sparse",
+          "owner": "movement",
+          "weights": {
+            "taken": 5.0,
+            "dropped": -5.0,
+            "captured": 15.0,
+            "team_captured": 0.0,
+            "enemy_captured": 0.0,
+            "returned": 3.0,
+            "team_returned": 0.0
+          }
+        },
+        "flag_carrier_kill": {
+          "description": "Sparse bonus wanneer een frag samenvalt met onze eigen vlag carried→dropped. near_base_bonus schaalt lineair met afstand drop→enemy-base — vol bij base, 0 op near_base_max_distance_uu. Iter 5 (Plan C, 2026-05-06): bonus 5→10 + near_base_bonus 5→15 om FC-kill duidelijker te differentiëren van gewone kill (ratio 1.7× → 2.4×). Een FC-kill vlak bij vijandbase voorkomt een capture die +7 score-units zou opleveren — proportioneel beloond.",
+          "kind": "sparse",
+          "owner": "movement",
+          "weights": {
+            "bonus": 10.0,
+            "near_base_bonus": 15.0
+          },
+          "near_base_max_distance_uu": 3000.0
+        },
+        "combat_event": {
+          "description": "Sparse combat-events: frag, death, fire-edge penalties, on/off-target shot bonus en killed-by-fire bonus. Werkt op fire-onset en score-deltas. shot_on_target instagib_only=false zodat ook flak primary fire de bonus krijgt — risico is acceptabel want bonus alleen bij score≥shot_min_aim_score.",
+          "kind": "sparse",
+          "owner": "shooting",
+          "weights": {
+            "frag": 0.5,
+            "death": -1.5,
+            "fire_penalty": 0.0,
+            "fire_during_cooldown_penalty": -0.05,
+            "shot_on_target_bonus_primary": 0.45,
+            "shot_on_target_bonus_alt": 0.7,
+            "shot_off_target_penalty_primary": 0.0,
+            "shot_off_target_penalty_alt": 0.0,
+            "missed_opportunity_penalty": 0.0,
+            "shot_perfection_bonus": 0.0,
+            "enemy_killed_by_fire": 0.0
+          },
+          "_doc_outcome_shift_phase_A_2026_05_29": "Round 10 (outcome-reward-shift Phase A, zie docs/TODO/outcome-reward-shift.md §3.1+§6.1+§7). shot_off_target_penalty_primary/_alt -0.08→0.0 + missed_opportunity_penalty -0.05→0.0. Reden: deze regularizers BLOKKEREN emergente tactiek — een block/area-denial-shot zonder schade werd als 'miss' bestraft (§3.1: single grootste blokkade voor area-denial); missed_opportunity strafte juist NIET-schieten (tegengestelde contextloze bias). shot_on_target_bonus_* (0.45/0.7) BEHOUDEN als aim-anker (asymmetrie: raak belonen, mis niet straffen → opent blocking zonder aim-leren te verliezen). Pivot van behavior-shaping naar outcome-shaping: damage_delta/frag/flag blijven dense outcome-kern. Reversibel.",
+          "_doc_iter5": "Iter 5 (2026-05-07): shot_off_target_penalty -0.3→-0.1 om risk-asymmetric beleid te corrigeren.",
+          "_doc_iter6": "Iter 6 (2026-05-07 21:30): shot_on_target/shot_off_target gesplitst in _primary + _alt. Diagnose live RL_REWARD: bot vuurde 100% alt fire (shotOnAlt=6.97 vs shotOn=0.00 in 4-sec window). Reward asymmetrie: 1 alt hit = +14 (bonus 2.0 + dmg×0.15×80HP) vs 1 primary hit = +5.75 (2.0 + 0.15×25HP). Iter 6 herijking: primary on=4.0 alt on=1.0; primary off=-0.05 alt off=-0.5. Per-shot net bij ~50% primary hit-rate vs ~25% alt hit-rate: primary +1.97/shot, alt +3.13/shot — alt blijft lucratiever bij goede aim, primary wint zodra alt-hit-rate <30% (close-range UT99 reality met goeie VR). Stuurt policy naar primary in close-mid range zonder alt volledig te verbieden.",
+          "_doc_iter15": "Iter 15 (2026-05-13): joint policy aimt weer goed maar fire-rate is te laag en altFire zakt naar near-zero. Verhoog on-target shot-bonus licht (altFire extra, omdat de BC/SAC-prior primary bevoordeelt), verlaag alt off-target tax, en activeer een kleine missed_opportunity penalty wanneer weaponCanFire + visible lead target + aim_score>=threshold maar de policy geen fire/altFire wil.",
+          "_doc_iter16_safety": "2026-05-15: off-target primary/alt penalties licht verhoogd (-0.04/-0.03→-0.08/-0.08) zodat schieten zonder aim/wall-facing direct op fire/altFire wordt afgestraft. Self-damage wordt daarnaast zwaarder en in JointRewardDecompositionStrategy naar reward_fire gemapt, zodat ricochet/splash zelfschade niet langer in residual verdwijnt.",
+          "shot_min_aim_score": 0.85,
+          "shot_precision_exponent": 2.0,
+          "shot_perfection_threshold": 0.95,
+          "shot_on_target_instagib_only": false,
+          "kill_credit": {
+            "backprop_enabled": true,
+            "window_ticks": 30
+          }
+        },
+        "objective_progress": {
+          "description": "Dense progress-shaping naar het huidige movement-objective + alive bonus per tick. own_flag_return_progress_scale wordt actief zodra onze vlag niet thuis is (DROPPED of CARRIED door enemy); in dat pad meet de distance tot ownFlag.location (drop site of enemy-carrier-positie) — onafhankelijk van resolveMovementPrimaryObjective zodat andere rollen ongewijzigd blijven. Defenders/supporters krijgen zo recovery-pull bij elke flag-away-state. carrier_proximity_bonus: kwadratische proximity-burst binnen carrier_proximity_radius_uu van home base voor flag-carrier (anti-vanishing-gradient in de capture last-mile). 2026-06-10: CTF-Face toegevoegd aan maps — zonder deze gate had het model op Face GEEN dense gradient richting vlag (sparse flag-events onbereikbaar via random walk op een 7572-UU-inter-base map). Δdist is per-UU geclamped (±50/tick) dus per-tick magnitude is map-grootte-onafhankelijk; progress_scale hoeft niet hertuned.",
+          "kind": "dense",
+          "owner": "movement",
+          "maps": [
+            "CTF-AndAction",
+            "CTF-Face"
+          ],
+          "weights": {
+            "progress_scale": 0.01,
+            "alive_bonus": 0.0,
+            "own_flag_return_progress_scale": 0.0,
+            "carrier_progress_scale": 0.0,
+            "carrier_proximity_bonus": 0.0,
+            "efc_threat_progress_scale": 0.05
+          },
+          "carrier_proximity_radius_uu": 500.0,
+          "_doc_efc_threat_progress_scale": "2026-05-29 (Round 7, user-suggestie 'negatieve reward als EFC dichter bij homebase komt + blokkeren'). Dense potential-based DENY-PROGRESS straf: naarmate de EFC (enemy die onze vlag draagt) dichter bij ZIJN capture-punt (de vijandelijke vlagbasis, waar ze onze vlag scoren) komt, krijgt de bot straf = -scale × Δ(EFC-afstand-tot-capture-punt) × proximityFactor. Symmetrisch → straf wanneer EFC vooruitkomt, BELONING wanneer hij wordt teruggedrongen/geblokt/gekild (Φ = EFC-afstand-tot-capture; verandert optimum niet, voegt urgentie toe). proximityFactor = max(0, 1 - botToEFC / efc_threat_proximity_range_uu) → INTERCEPTOR-SCOPED: de bot die dichtbij genoeg is om te blokkeren voelt de urgentie, verre bots krijgen 0 (geen ruis). Vult het gat: vóór R7 was enemy_captured (-8/-12/-30) de ENIGE EFC-straf — sparse, pas bij voltooide capture (te laat). 0.05 × Δdist(≤50/tick) × prox = tot ~0.44/tick wanneer EFC sprint richting capture en bot adjacent; vergelijkbaar met progress_scale-orde, modest. Movement-head (gevouwen in objective_progress). ALLEEN bij eigen vlag CARRIED (prev EN curr). 0.0 = uit.",
+          "_doc_efc_threat_proximity_range_uu": "Nabijheidsbereik (UU) waarbinnen de bot de EFC-threat-straf voelt. 700 UU op deze map (inter-base ~1345 UU) = ongeveer de helft van het veld → een bot die realistisch kan onderscheppen/blokkeren voelt de urgentie, een attacker diep in de enemy base (>700 UU van de EFC) krijgt 0. proximityFactor lineair 1.0 (op de EFC) → 0.0 (op range).",
+          "efc_threat_proximity_range_uu": 700.0,
+          "_doc_efc_engagement_range_uu": "2026-05-29 (Round 4, Q2 overshoot-fix). Engagement-standoff voor de EFC-chase (eigen vlag CARRIED door enemy). prev/curr afstand tot de bewegende EFC worden geclamped op max(dist, range) vóór de progress-delta → sluiten beloond tot de band-rand, beweging binnen de band geeft 0, band-rand = attractor. Een vluchtende EFC houdt de bot zo automatisch op ~range = trailen-en-schieten i.p.v. erdoorheen lopen. ALLEEN status==CARRIED (niet stationaire dropped-flag, niet generieke capture-run → movement_flag KPI beschermd). Map: inter-base ~1345 UU, rocket-splash damageRadius 220 UU (self-splash reikt ~237 UU incl. collision-radius). ROUND 5 (2026-05-29 ~18:15): 350→280. Diagnose R4: standoff op 350 verminderde overshoot+self-splash (selfDmg -1.40→-0.99, pitch ↓) EN promote (movement_flag 0.753→1.044), MAAR carrierKill nz% zakte 10.2%→7.6% (vlak intern 6.7%, geen herstel) + flagEnemyCaptured iets negatiever → 350 te ver voor de trage rocket (900 UU/s) op een bewegende EFC: lead-fout te groot, bot doet schade maar finisht de kill niet vóór de EFC ontkomt. 280 = dichterbij voor betere hit-rate, nog steeds > ~237 self-splash-reik (+43 UU marge) zodat geen point-blank self-splash terugkeert. R4-geschiedenis: 350. 0.0 = standoff uit (monotone Δdist→0, oude gedrag).",
+          "efc_engagement_range_uu": 280.0
+        },
+        "speed": {
+          "description": "Dense reward proportioneel aan 2D verplaatsingssnelheid, clamped op 20 UU/tick om reward-spikes door fall/launch te voorkomen.",
+          "_doc_2026_05_23_movement_boost": "weight 0.0→0.003: live observatie dat veel bots vel=0 hielden in eigen spawn-corner zonder positieve feedback om te bewegen. Speed reward fires elke tick proportioneel aan snelheid (gecapt op 20 UU/tick) zodat de policy een constant 'moving > stil staan' signal krijgt naast objective_progress. 0.003 × 20 = 0.06 max/tick = ~3 reward over 1s sustained vol-speed; klein genoeg om niet capture/cap te overstemmen, groot genoeg om idle-in-corner te ontmoedigen.",
+          "kind": "dense",
+          "owner": "movement",
+          "weight": 0.003
+        },
+        "facing": {
+          "description": "Dense yaw-facing reward richting movement-objective: bonus · max(0, dot).",
+          "kind": "dense",
+          "owner": "movement",
+          "weight": 0.0
+        },
+        "view_alignment": {
+          "description": "Dense ViewTargeting-aware yaw alignment + acquisition. Joint policy houdt het oude viewrotation-leersignaal actief zodat yaw/pitch niet alleen indirect via sparse shooting-events hoeven te leren.",
+          "kind": "dense",
+          "owner": "viewrotation",
+          "_doc_enemy_alignment_outcome_shift": "Round 10 (Phase A, 2026-05-29): enemy_alignment_bonus 5.0→2.5 (halveren, outcome-reward-shift §7). Dit is de heuristic yaw-pull naar een vast mikpunt — halveren geeft de policy ruimte om te leaden via de velocity/tti-features i.p.v. op een statisch punt te blijven. acquisition_bonus (5.0, PBRS-delta) BEHOUDEN — versnelt aim-leren zonder het mikpunt te bevriezen. on_target/precision voorlopig behouden (decay later indien nodig).",
+          "weights": {
+            "enemy_alignment_bonus": 2.5,
+            "objective_alignment_bonus": 0.0,
+            "acquisition_bonus": 5.0,
+            "precision_bonus": 0.5,
+            "on_target_bonus": 1.0,
+            "pre_fire_stability_bonus": 0.0
+          },
+          "precision_threshold": 0.995,
+          "on_target_threshold": 0.9995,
+          "pre_fire_stability_aim_score_threshold": 0.95,
+          "pre_fire_stability_yaw_velocity_threshold_norm": 0.02,
+          "enemy_alignment_max_range_uu": 100000.0,
+          "_doc_enemy_alignment_max_range_uu": "2026-06-11: gate INGESTELD op 100000 (=UIT). Eerst 2500 geprobeerd om cowardice-farm te breken, maar (a) brak de cowardice niet (bot rukt niet op; root-cause = combat-onvermogen op afstand, niet de aim-farm) en (b) degradeerde aim (cc2_fire_aim_alignment 0.786->0.670): voor een HITSCAN-wapen (shock primary) is lange-afstand-aim een legitieme engagement, dus gaten verwijdert nodige aim-training. Param/code blijft (harmloos bij grote range); evt. later weapon-dependent maken (gate alleen voor projectile-wapens flak/rocket/bio met korte effectieve range)."
+        },
+        "_doc_pitch_2026_05_21_round5b": "Round 5b (2026-05-21): extreme_threshold_norm 0.30 → 0.55. Reden: user-observatie dat alt-fire arc op CTF-AndAction upward pitch nodig heeft (~28° voor flak grenade compensatie over 2000 UU). Threshold 0.30 = ~27° = bot zat op grens van extreme_penalty zelfs voor normale alt-arc. Met 0.55 (~50°) kan bot vrij arc-aim doen voor lange-afstand alt zonder per-tick penalty. extreme_target_margin_norm 0.18 ongewijzigd: target-context exception blijft genereus voor hoogteverschillen op andere maps.",
+        "pitch": {
+          "description": "Dense pitch-alignment richting actief aim target + acquisition + extreme-pitch penalty.",
+          "_doc_alignment_weight_2026_05_29_groundaim": "Round 8 (2026-05-29): alignment_weight 1.5→4.0. Diagnose (16-agent workflow, dim B): na R1 (foot-target -40) + R6 (action_bias van pitch los) bleef de bot ZICHTBAAR op body-aim (user-bevestigd, 7 rounds). Rootcause = NIET normalisatie binnen de pitch-head (alignment is daar al ~57% van de variantie), maar (a) het laagste combat-head-gewicht (pitch 0.8 vs fire 1.75/altFire 2.25 die de gedeelde pitch-dim naar de hit-maximaliserende body-aim co-trainen) en (b) een geometrisch bescheiden signaal (foot = -8° @280UU, -0.12 alignment-cost/tick op 1.5). 4.0 maakt de per-tick foot-pull een ondubbelzinnige lage-pitch-attractor (alignment-cost op body-err 0.096 → -0.38/tick) en verhoogt alignment's variantie-aandeel ~57%→~78% (drukt de yaw-oscillatie-smoothness-confound terug). LAAG risico vs mei-25 crash: target = NON-extreme voet (~-9°, pitchNorm -0.09), tegengesteld aan de extreme-clamp; raakt entropie/fire-head NIET. Samen met sac.json reward_head_weights.pitch 0.8→1.4 (dim B hoogste-confidence lever). Watch pitch_sat (moet 0 blijven); bij regressie terug 1.5.",
+          "kind": "dense",
+          "owner": "viewrotation",
+          "weights": {
+            "alignment_weight": 4.0,
+            "acquisition_bonus": 1.0,
+            "extreme_penalty": -2.0
+          },
+          "extreme_threshold_norm": 0.55,
+          "extreme_target_margin_norm": 0.18
+        },
+        "enemy_spacing": {
+          "description": "Dense mid-range positie-prior, WAPEN-GEGATE: EnemySpacingReward telt alleen wanneer de bot zelf een shock rifle vasthoudt (FireModeAimTargeting.isShockRifleClass — stock Botpack.ShockRifle of NeuralNetWebserver.RLShockRifle), zodat de prior het daadwerkelijk vastgehouden wapen volgt i.p.v. een globale weapon_profile. Afstand genormaliseerd op inter-base (CTF-AndAction ~1345 UU). Band 0.35-0.65 (~470-875 UU) = ideale combo/hitscan-afstand -> kleine ideal_bonus per tick. Onder min_norm 0.22 (~300 UU = point-blank: geen combo-ruimte + self-splash-risico) -> kleine too_close_penalty. too_far closing uit (geen forced-approach; CTF-objective blijft leidend). Migratie 2026-06-02: verplaatst uit weapon_profiles.shock naar default + wapen-gate, zodat shock-bots de prior ook in een gemengd arsenaal krijgen en flak-bots NIET.",
+          "kind": "dense",
+          "owner": "movement",
+          "_doc_2026_06_17_loiter_fix": "ideal_bonus 0.015->0 + too_close_penalty -0.01->0 (UITGESCHAKELD). User-observatie in-game: attackers EN carriers blijven op midfield rond enemies HANGEN (op de ideale shock-afstand ~470-875 UU) i.p.v. erlangs te passeren naar het objective. Combat is gedeprioriteerd (flag-first) dus ze schieten niet, maar de spacing-prior houdt ze op afstand cirkelen (ideal_bonus loitert, too_close_penalty blokkeert passeren-dichtbij). Het lokale spacing-equilibrium won van de CTF-objective op midfield -> vlag komt niet voorbij het midden -> geen captures. Nu UIT zodat objective_progress de bot DOOR het midfield trekt, langs de enemy. Combat-positionering-verlies is moot want combat is gedeprioriteerd. Backup: models/backup_pre_enemyspacing_2026-06-17.",
+          "weights": {
+            "too_close_penalty": 0.0,
+            "delta_scale": 0.0,
+            "ideal_bonus": 0.0,
+            "too_far_closing_scale": 0.0
+          },
+          "min_norm": 0.22,
+          "ideal_min_norm": 0.35,
+          "ideal_max_norm": 0.65,
+          "max_norm": 0.9
+        },
+        "view_smoothness": {
+          "description": "Dense view-jitter penalty: smoothness + yaw-oscillation + post-fire commitment. Joint policy houdt deze mild actief voor stabiele aim.",
+          "kind": "dense",
+          "owner": "viewrotation",
+          "weights": {
+            "smoothness_penalty": 0.1,
+            "yaw_oscillation_penalty": 1.5,
+            "post_fire_commitment_penalty": 0.0
+          },
+          "post_fire_commitment_window_ticks": 8
+        },
+        "movement_action": {
+          "description": "Action-conditional rewards: directionele collision penalty, floor-drop, stuck (action-blocked + low movement), dodge bonus op ACTIVE→DONE transitie, idle-urgency penalty (IDLE gekozen terwijl carrier/recover-rol bewegen vereist), en exposed-idle penalty (bot horizontaal stilstaat met visible enemy in duel-range — onafhankelijk van actie-intent). Andere idle-contexten (defensief wachten, item-camp, aiming pause) worden niet gestraft door idle_urgency. Exploratie is tweeledig: exploration_bonus = cooldown-based 2D ('blijf in beweging'-prior, komt terug na exploration_cooldown_ticks), first_visit_bonus = eenmalige 3D-voxel-novelty per bot-proces-leven (dooft definitief uit; geen reset bij dood/match-restart dus suicide farmt niets; 3D zodat toren-verdiepingen/corridors apart van het grondvlak tellen). Beide tellen in het EXPLORATION breakdown-signaal.",
+          "kind": "action",
+          "owner": "movement",
+          "_doc_iter16_dodge": "2026-05-15: dodge 0.0→0.12 voor full-joint. Movement-head was aan BC verankerd maar kreeg geen RL-signaal voor succesvolle dodges, waardoor joint bots weinig side-step/dodge leerden ondanks self_dodgeCooldown_norm in features.",
+          "_doc_iter17_dodge_flak": "2026-05-19: dodge 0.12→0.50 (4.2×) voor FlakOnly arena. Replay buffer empirisch over 108 batches: dodge action-rate 0.3-8.7% (vol-collapsed). Dodge bonus op ACTIVE→DONE only — bot moet dodge initiëren om reward te krijgen, classic exploration deadlock. Sterker post-success signaal versnelt Q-bootstrap zodra entropy-boost binary dims aanzet. Idle_urgency penalty -0.02→-0.10: champion bIdle=0.05% nu, dus mag stevig negatiever zonder huidige gedrag te bederven, voorkomt regress. dodge_initiate: NEW bonus op NONE→directional transitie (server-validated dodge start). Densere signaal dan dodge (ACTIVE→DONE only); doorbreekt exploration deadlock door elke succesvolle dodge initiatie te belonen, niet alleen voltooide dodges.",
+          "_doc_first_visit": "2026-06-10 (CTF-Face map-switch): first_visit_bonus 0.2 per nieuw 96-UU-voxel. Doel: exploratie-druk het ONBEKENDE in (tempel-corridor-ontdekking) — de cooldown-variant maakt bekend gebied na 600 ticks even waardevol als onbekend en projecteert 2D. Bij lopen door vers gebied ≈ 1 voxel per 3-4 ticks ≈ 0.05-0.07/tick gemiddeld — bewust ONDER de objective_progress-pull (~0.2-0.3/tick) zodat doelgerichtheid wint zodra er gradient is; novelty is de tie-breaker waar progress geen richting geeft. Niet PBRS maar zelf-dovend (elke voxel max 1× per proces) → asymptotisch geen bias.",
+          "weights": {
+            "collision_penalty": -0.05,
+            "floor_drop_penalty": -0.1,
+            "stuck_penalty": -0.02,
+            "dodge_initiate": 0.25,
+            "dodge": 0.5,
+            "idle_urgency_penalty": -0.1,
+            "exposed_idle_penalty": 0.0,
+            "area_stuck_penalty": -0.04,
+            "exploration_bonus": 0.15,
+            "first_visit_bonus": 0.2,
+            "void_avoidance_scale": 0.0,
+            "dodge_to_edge_penalty": -3.0
+          },
+          "floor_drop_danger_threshold_uu": 560,
+          "collision_near_threshold_norm": 0.12,
+          "stuck_distance_threshold_units": 5.0,
+          "exposed_idle_velocity_threshold_norm": 0.05,
+          "exposed_idle_enemy_distance_threshold_norm": 0.3,
+          "area_stuck_window_ticks": 300,
+          "area_stuck_radius_uu": 500.0,
+          "exploration_cell_size_uu": 256.0,
+          "exploration_cooldown_ticks": 600,
+          "exploration_first_visit_voxel_uu": 96.0,
+          "void_avoidance_full_drop_uu": 1600.0,
+          "void_avoidance_clamp_per_tick": 3.5,
+          "void_avoidance_z_jump_threshold_uu": 500.0,
+          "exploration_grounded_floor_below_max_uu": 600.0,
+          "_doc_exploration_grounded_gate": "2026-06-13: exploration (first_visit + cooldown) telt ALLEEN wanneer grounded (collisions.floorBelow <= 600uu). GEMETEN PERVERSE PRIKKEL: val-windows hadden exploration 6.70 vs 4.61 zonder val — een val passeert tientallen nooit-bezochte 3D void-voxels → first_visit-novelty beloont VALLEN, en dat zit in dezelfde MOVEMENT-head als void_avoidance dus de twee heffen elkaar deels op (verklaart waarom scale-5/8 de vallen niet verlaagde). floorBelow satureert (~2048) zodra de voeten over de void hangen → gate vangt de val bij de edge-step-off; normale sprongen (floorBelow <600) blijven exploration geven. Map-onafhankelijk/structureel. Reversibel (zet hoog = uit).",
+          "_doc_void_avoidance_escalation_2026_06_13": "scale 5.0→8.0 + clamp 2.0→3.5 na ~2.5u: recent void-fractie bleef vlak/steeg (23.3→27.4%) bij scale 5. Reward-decompositie: falls/void_avoidance/objectiveProgress zitten in de MOVEMENT-head (los van de viewAlignment-farm in de VIEW-head — die drowned de falls dus NIET). Binnen de movement-head is objectiveProgress -103 (negatief want oprukken→val→respawn-ver) → policy leerde 'oprukken=slecht' → stalt. Sterker anti-edge-signaal nodig om die deadlock te breken (oprukken stopt netto-negatief te zijn zodra niet-vallen). clamp 3.5 zodat het approach-signaal (~-2.4/tick bij scale 8) niet weggekapt wordt; step-off cap -3.5. PBRS dus geen freeze. Watch: recent void-fractie MOET dalen, X-spread behouden (>~4000; bij krimp = te sterk → scale 6). Bij vlak blijven ondanks scale 8 → geodesic-veld densify (diagonaal-pull root) i.p.v. nog sterker.",
+          "_doc_2026_06_11_floor_drop_boost": "2026-06-11 Fix F (-2.0) TERUGGEDRAAID naar -0.1: faalde + werkte averechts. Na 1.5u: void-fractie 20.3->25.5% (vallen NIET gedaald) + X-spread 5344->4717->3775 (over-voorzichtig/freeze). Conclusie: B/D/E/F (4 reward-hefbomen) falen alle de Face-nav/vallen op te lossen -> reward-shaping is NIET de hefboom; bot kan smalle-brug-nav niet alleen leren. BC-demo s op Face = de echte weg (project-design: BC=fundament voor nieuwe map).",
+          "_doc_void_avoidance": "2026-06-13 (CTF-Face vallen, STRUCTUREEL): void_avoidance_scale 5.0 — PBRS edge-exposure potential. Diagnose (positie-traces + raw): bots vallen door ZIJWAARTSE afdrijving van de Y-zijranden TIJDENS +X-oprukken (moveYaw heeft een laterale component). Fix F (floor_drop_penalty) faalde STRUCTUREEL want die snapt moveYaw naar 1 van 8 aim-relatieve sectoren en leest enkel die sector → een 'mostly-forward, slightly-toward-rail'-heading snapt naar FORWARD, leest fwdFloorDelta (brug ligt vooruit = veilig) → de laterale drift is ONZICHTBAAR. Dit nieuwe term meet exposure = fractie van ALLE 8 floor-delta-sectoren met een val-grade drop (> floor_drop_danger_threshold_uu, lineair tot full_drop) en vormt een potentiaal Φ=-scale×exposure; de reward is de PBRS-delta F=Φ(curr)-Φ(prev). Naderen van een rand (exposure↑) straft VÓÓR de val (anticipatief, ~160uu probe-lookahead), terugkeren naar veilige vloer (exposure↓) beloont → symmetrisch (PBRS, policy-invariant) dus GEEN freeze zoals de eenzijdige Fix F. Map-onafhankelijk/structureel: op void-vrije maps (AndAction enclosed arena) is exposure overal 0 → F=0 → nul effect op bestaande getrainde maps/wapens; elke nieuwe void/lava/klif-map krijgt edge-vermijding gratis zonder config-tweak. Respawn-guard: skip bij |Δz|>z_jump_threshold (respawn uit void) of health-stijging (combat-death-respawn) zodat Φ niet over de discontinuïteit telescopeert (anders zou dood+respawn belonen). z_jump 500 (>step-off Δz ~150, <respawn Δz >1000). clamp ±2.0 tegen critic-destabilisatie. Reversibel (scale 0 = uit). Watch: void-fractie/selfDamage↓, X-spread behouden (geen freeze); te voorzichtig→scale 3, te zwak→7."
+        },
+        "damage_delta": {
+          "description": "Damage-based shaping (flak-mode): per-HP rewards voor dealt/taken/self/friendly + sniper headshot-event bonus. Attribution exact via UC RLCTFGame.ReduceDamage hook → instigator slot per victim, gechecked tegen own slot in DamageDeltaReward. Multi-bot cross-attribution (oudere fire-edge heuristiek) is hierdoor weg. In joint mode wordt self_damage naar reward_fire gedecomponeerd zodat unsafe shot/ricochet feedback de fire-head traint. headshot_bonus actief wanneer enemy.lastDamageType == 'Decapitated' (Sniper alt-damage-type bij head-zone hit).",
+          "kind": "sparse",
+          "owner": "shooting",
+          "weights": {
+            "dealt_per_hp": 0.0625,
+            "taken_per_hp": -0.01875,
+            "self_damage_extra_per_hp": -0.25,
+            "self_damage_max_hp_per_event": 200.0,
+            "friendly_fire_per_hp": -0.05,
+            "headshot_bonus": 0.1,
+            "efc_damage_bonus_per_hp": 0.125,
+            "void_fall_penalty": -80.0,
+            "void_fall_hp_threshold": 500.0
+          },
+          "_doc_self_damage_max_hp_per_event": "2026-06-10: NIEUW (CTF-Face/Facing Worlds). Per-event clamp op het HP-bedrag dat de self_damage-straf voedt. Engine-instakills (FellOutOfWorld in de void, lava, telefrag) rapporteren een gigantische lastDamageAmount (10k–70k HP); ongeclampt werd selfDamage -8000..-17000 per window en verpletterde het hele rewardsignaal — de SAC-critic kreeg ±8000 outliers in een ±10 buffer (TD-explosie, geen leren). 200 HP → een val kost 200×-0.25=-50 (death-schaal, sterke 'niet vallen'-deterrent) i.p.v. -8500. Echte flak/rocket close-range self-splash (≤~150 HP) blijft volledig onaangeroerd. Map-onafhankelijk en structureel: elke map met void/lava/fall-deaths is hiermee gedekt zonder per-map tuning. Verplichte property (no-fallback); rewardgroup0-3 + lege weapon_profiles erven via deep-merge uit default.",
+          "_doc_headshot_bonus": "2026-06-02: 0.0 → 1.0. Klein-beetje-extra event-bonus per Sniper-headshot (enemy.lastDamageType ~ 'Decapitated', case-insensitive — zie WeaponClassNameTable: de damage-name werd vóór deze datum niet gedecodeerd en kwam als Unknown#hex binnen, dus de bonus triggerde nooit). Gerouteerd naar de fire-head met damage_delta_weight (1.0) → +1.0 reward per gedecapiteerde enemy. SAFE-BY-CONSTRUCTION (precies als shock_combo_event): alleen de SniperRifle produceert 'Decapitated', dus 0 effect op flak/shock/rocket/elk ander wapen — daarom staat hij veilig in default (werkt zodra een bot een sniper draagt, ook in all-mode). Waarom 1.0 (~1/5 frag): een headshot is een 1-shot instant kill (100 HP) maar levert via dealt_per_hp MINDER damage-reward op (100×0.0625=6.25) dan een 3-shot body-kill (3×45×0.0625=8.44, met overkill); deze bonus beloont de efficiëntie/precisie van de decap expliciet zonder de kill-economie te overstemmen. Werkt samen met sniper_primary_aim_target_height_uu (de viewrotation-prescription die de aim naar het hoofd trekt). Tunable; verhoog als headshots te zeldzaam blijven, verlaag als de bot ze boven objectives gaat farmen.",
+          "_doc_efc_damage_bonus_per_hp": "2026-05-29 (Round 2, Q2 EFC-intercept): EXTRA per-HP bonus bovenop dealt_per_hp wanneer de geraakte enemy ONZE vlag draagt (enemy.hasFlag = EFC; in CTF kan een enemy alleen onze vlag dragen → schaal-vrije identificatie). 0.125 → EFC-schade = (0.0625+0.125)=0.1875/HP = 3× normaal; een 100HP EFC-kill geeft 18.75 dense damage-reward (vs 6.25 normaal) bovenop de sparse flag_carrier_kill (10 + tot 15 prox). Dense gradient die 'stop en schiet de EFC neer (liefst grond-splash van achter)' lonender maakt dan voorbijlopen → corrigeert het overshoot-gedrag. Gevouwen in damageDealt (DamageDeltaReward) → fire-head, zichtbaar in dmgDealt log. Gerechtvaardigd: een EFC-kill voorkomt een vijandelijke capture (groot scoreverlies) en heropent onze eigen capture. pe.hasFlag||ce.hasFlag vangt pre-kill ticks + killing blow.",
+          "_doc_iter5": "Iter 5 (2026-05-07): dealt_per_hp 0.05→0.15. Een 80HP flak-hit was +4.0 (=0.8 frag-equivalent), nu +12.0 (=2.4 frag-equivalent). Maakt damage-doen veel waardevoller dan voorheen — bot leert om combat-engagements te zoeken zelfs als kills niet zeker zijn. Sterk genoeg om de risk-aversiefe policy uit zijn lokaal optimum te trekken.",
+          "_doc_iter14": "Iter 14 (2026-05-09): dealt_per_hp 0.15→0.0625 (=5/80, KPI-aligned met frag=5 anker), taken_per_hp -0.02→-0.01875 (=5×0.3/80, KPI-aligned). Doel: ratio reward-frag : reward-100HP-damage = 5 : 6.25 (matches KPI ratio 1 : 1.25). Pre-Iter-14 ratio was 5 : 15 (3× damage-skew → alt-spam Goodhart-vector). Killen netto attractiever dan chip-damage.",
+          "_doc_iter16_safety": "2026-05-15: self_damage_extra_per_hp -0.10→-0.25 en self_damage wordt in joint decompositie naar reward_fire gemapt. Een 40HP self-splash wordt daarmee ~-10 fire reward extra i.p.v. een zwakke residual die multi-head SAC niet gebruikte."
+        },
+        "projectile_aim": {
+          "description": "Dense per-tick: hoe dichter eigen projectile bij een enemy, hoe hoger de reward. Shooting: 0.0 — was perverse 'fire vaker want projectile-in-lucht = continu reward' incentive. Damage_dealt + shot_on_target geven al concrete success-events bij goeie aim; geen dense per-tick reward nodig.",
+          "kind": "dense",
+          "owner": "shooting",
+          "weight": 0.0,
+          "sigma_ut": 150.0,
+          "close_range_damping_sigma_uu": 1000.0
+        },
+        "primary_fire_aim": {
+          "description": "Dense per-tick bij fireActive: weight · aim_score · close_factor. Shooting: 0.0 — zelfde perverse incentive als projectile_aim ('fire-knop ingedrukt = continu reward'). Vervangen door fire-edge shot_on/off bonusen.",
+          "kind": "dense",
+          "owner": "shooting",
+          "weight": 0.0,
+          "min_score": 0.5,
+          "long_range_damping_sigma_uu": 1500.0
+        },
+        "fire_holding_penalty": {
+          "description": "Dense penalty zolang fire-knop ingedrukt en aim_score < min. Vervangen door ammo_consumption_penalty (Iter 6, 2026-05-07): tick-based straf leerde binaire 'knop niet indrukken' policy. Resource-cost via ammo is genuanceerder. Geset op 0 — niet verwijderd ivm backward-compat op geladen oude checkpoints.",
+          "kind": "dense",
+          "owner": "shooting",
+          "_doc_iter5": "Iter 5 (2026-05-07): per_tick_penalty -0.03→-0.01. Iter 6 (2026-05-07 21:00): -0.01→0 — vervangen door ammo_consumption_penalty.",
+          "per_tick_penalty": 0.0,
+          "min_aim_score": 0.6
+        },
+        "ammo_consumption_penalty": {
+          "description": "Per-ammo-unit straf op verbruikt ammo tussen prev en curr frame. Vervangt fire_holding_penalty. Bot leert efficiency: 1 shot = -X kost, 8-shot spam = -8X, maar 8 shots die 80HP hit landen geven +12.0 (damage_delta dealt_per_hp=0.15) → netto sterk positief. Spam loopt automatisch leeg via ammo-resource. Edge cases: weapon-switch, respawn (health=0), pickup (negatieve delta) → skip. Iter 6 (2026-05-07): -0.05/ammo. 1 hit (10HP) = +1.5 reward; 1 ammo cost = -0.05 → break-even op 3% hit-rate, ruim onder UT99-bot ~20%. Bot leert mikken (lagere ammo-cost-per-damage), niet wel/niet schieten. Iter 14 (2026-05-09): per_ammo_penalty -0.05→0. KPI-as-reward straft al onproductief spammen impliciet (geen damage = geen reward). User-spec: 'spammen mag als het werkt' — geen expliciete ammo-bias meer.",
+          "kind": "dense",
+          "owner": "shooting",
+          "per_ammo_penalty": 0.0
+        },
+        "enemy_spawn_attention": {
+          "description": "Dense bonus voor view richting enemy-spawn wanneer alle vijanden dood zijn. Shooting: niet actief.",
+          "kind": "dense",
+          "owner": "viewrotation",
+          "weight": 0.0,
+          "hold_ticks": 90
+        },
+        "score_gain_rate": {
+          "description": "Dense per-tick reward proportioneel aan eigen UT99 score-gain over rolling window. Iter 5 (2026-05-06 23:35): weight 100→0 — Plan A switchte de DeltaGate KPI naar 'frags', maar deze reward leest playerPawn.score (= frags + 7·caps + bonuses) wat een ANDERE quantity is. RL-gradient duwde dus richting score-maximalisatie (caps incluis) terwijl de gate test op pure frags-rate. Cross-purpose: na 1u draaiden 15 rollbacks met candidate rl_avg=0.04-0.52 frags/min (vs baseline 2.07), 3× ADAM_WIPE getriggerd zonder herstel. Met weight=0 leveren combat_event.frag (5.0) + enemy_killed_by_fire (5.0) + damage_delta + flag_carrier_kill de frag-aligned gradient; DeltaGate doet de objective-checking. Iter 4b (weight=100) historisch: zie eerdere sessie-notes. Iter 4a formule (integraal-correct): reward = weight × scoreDelta × dtMs / windowMs.",
+          "kind": "dense",
+          "owner": "shooting",
+          "weight": 0.0,
+          "window_ms": 30000,
+          "min_window_ms": 5000
+        },
+        "flak_avoidance": {
+          "description": "Threat-aware shaping op inbound flak (chunks + grenades). instant_weight = continue safety-shaping (Σ CAD_norm × urgency over alle relevant flak), leert positionering. delta_weight = shaping op afname van max-threat per tick (clamp tegen spawn-spikes), beloont actief uit-baan-bewegen. urgency = max(0, 1 − tti/threshold). Hitscan- en non-flak-projectielen worden genegeerd.",
+          "kind": "dense",
+          "owner": "movement",
+          "weights": {
+            "instant_weight": 0.0,
+            "delta_weight": 0.0
+          },
+          "urgency_threshold_norm": 0.7,
+          "delta_clamp_per_tick": 0.1
+        },
+        "pickup_event": {
+          "description": "Sparse pickup-awareness rewards op de transitie bot pakt statische pickup op (prev.available → curr.taken). Detector = Java state-diff in PickupEventReward; instigator = self iff bot binnen 80 UU op het prev-frame. Reward formule: voor health/armor pickups (shieldbelt/armor/thighpads/megahealth/medbox/vial) = min(Δhealth + Δarmor, cap[type]) × weight[type] — bot met full HP+armor krijgt 0 (anti-greed; vials krijgen voorrang boven medbox zodra hp=100 want medbox cap=100 maar vial cap=199). Voor amp (UDamage) = vaste amp_flat × 1 want UDamage geeft geen Δhp/Δarmor. Pad-A weapon pickups = conditional flat: weapon_new_flat als bot dit wapen NIET had in prev inventory, weapon_owned_flat (kleiner) als hij 't al had (= ammo refill). Pad-A ammo pickups = per-canonical flat weight uit weights.ammo. Decompositie: alle pickup-rewards → movement head (analoog flag_event — pickup-awareness is een navigatie-skill).",
+          "kind": "sparse",
+          "owner": "movement",
+          "weights": {
+            "shieldbelt": 0.06,
+            "armor": 0.04,
+            "thighpads": 0.04,
+            "amp_flat": 3.0,
+            "megahealth": 0.04,
+            "medbox": 0.05,
+            "vial": 0.1,
+            "weapon_new_flat": 3.0,
+            "weapon_owned_flat": 0.5,
+            "ammo": {
+              "eclip": 0.4,
+              "bulletbox": 0.4,
+              "bioammo": 0.5,
+              "shockcore": 0.5,
+              "bladehopper": 0.4,
+              "pammo": 0.5,
+              "flakammo": 0.6,
+              "rocketpack": 0.6
+            }
+          },
+          "caps": {
+            "shieldbelt": 100.0,
+            "armor": 100.0,
+            "thighpads": 50.0,
+            "megahealth": 100.0,
+            "medbox": 20.0,
+            "vial": 5.0
+          },
+          "_doc_weights": "Initieel uncalibrated; ankerwaarde = flag_event_weight (1.0) × (cap/100) ≈ 0.04-0.06 voor armor/health pickups, geeft per-pickup een effectieve max-reward ~4-6 (vergelijkbaar met flag_taken=5). amp_flat=3.0 = ongeveer halve flag_capture (UDamage is sterk maar tijdelijk en vereist aim om te benutten). Pad-A (mei 2026): medbox=0.05 → max 1.0 per pickup (cap 20×0.05); vial=0.10 → max 0.5 per vial (5×0.10) maar vials zijn frequenter; weapon_new_flat=3.0 (zelfde orde als amp, want wapen-acquisitie is groot); weapon_owned_flat=0.5 (klein, = motivatie om door te lopen + respawn-deny); ammo per-class 0.4-0.6 op basis van schaarste in stock UT99 maps (rocketpack zeldzaamst → hoogste). Tune per ablation na BC retrain."
+        },
+        "shock_combo_event": {
+          "description": "Sparse event-bonus voor shock-rifle combo: eigen Botpack.ShockProj verdwijnt tussen prev en curr frame, en op diezelfde tick raakt een enemy door bot geïnstigeerde damage binnen combo-radius rond de bal-positie. ÉÉN event per ball, NAAST damage_delta (Δhp is al beloond via damage_dealt). Doel: discrete skill-bonus voor de specifieke 'schiet primary op eigen ShockProj met enemy in splash' tactiek zodat het model die combo expliciet leert.",
+          "_doc_event_bonus_2026_06_02": "Round 1 (2026-06-02): 0.5 → 2.0. De geslaagde combo werd verdronken door het FIRE-channel-landschap (shotOnTarget/damageDealt ~4/window); 2.0 (×shot_event_weight 5.0 = 10 effectief) maakt een geland combo-event duidelijk bekrachtigd, op orde van een flag-take. Veilig-by-construction: triggert alleen bij een eigen Botpack.ShockProj → 0 effect op flak/elk ander wapen. Werkt samen met de nieuwe dense shock_combo_aim discovery-gradient.",
+          "kind": "sparse",
+          "owner": "shooting",
+          "_doc_event_bonus_2026_06_03_c3": "C3 (22:35): 2.0→3.0 (effectief ×shot_event_weight 5 = 10→15). Na 2 gefaalde combo-aim-tweaks (beam-gate schoon + aim-weight 0.2→0.35) bleef combo vlak ~8% en alt vlak ~41: de policy zit in een 'spam+raak'-optimum omdat de combo-reward (~0.8 effectief/win) verdrinkt naast shotOnTarget~25/win in de FIRE-head. Sterkere event-bonus maakt elke geslaagde combo duidelijk lonender → trekt de policy naar combo-prioriteit i.p.v. het richten te belonen. Veilig-by-construction (alleen eigen ShockProj → 0 effect op andere wapens). Monitor selfDamage (combo-te-dichtbij degeneratie) + frag (mag niet instorten). Verder naar 4-5 als richting goed maar traag; terug naar 2.0 bij degeneratie.",
+          "weights": {
+            "event_bonus": 3.0
+          },
+          "_doc_detection_2026_06_04": "Detectie herschreven van bal-tracking + beam-detonatie-gate naar SCHADE-HOOGTE. De UT99-bron (ShockProj.uc) toont: de combo is SuperExplosion() = HurtRadius(Damage*3=165, 250), de gewone bal-explosie Explode() = HurtRadius(Damage=55, 70), de primary-beam HitDamage=40. Stock UT99 geeft alle drie hetzelfde MyDamageType='jolted' — er is GEEN aparte combo-damage-type (de oude DamTypeShockCombo-aanname klopte niet). Maar de schade-grootte scheidt ze fysiek: op 3070-self-play-data ligt elke gewone hit ≤67 en elke combo ≥117, met een leeg gat ertussen. Daarom: een enemy-slot die deze tick HP verliest (DamageDeltaReward-edge), met ons als engine-instigator, lastDamageType='jolted' én lastDamageAmount ≥ combo_min_damage = eenduidig een combo. Dit vervangt de oude beam-gate die ~de helft van de echte detonaties miste (frame-jitter + beam-positie-raden) en is robuuster én simpeler — gebruikt alleen bestaande UDP-velden, geen UnrealScript-mod. Veilig-by-construction: 'jolted'-filter sluit flak/rocket/elk ander wapen uit → 0 effect op andere wapens/maps. Meet de echte combo-rate via COMBO_HIT-regels in de bot-log (scripts/analysis/combo_trend_probe.py).",
+          "combo_min_damage": 75.0,
+          "_doc_combo_min_damage_r4": "R4 (2026-06-07 ~07:45): 90->75. Rationale: de klik-economie+refire-klok hebben de PRECURSOR-skill gevestigd (selectieve kliks, krediet-oogst 38-43% hi-windows) maar de VOLTOOIING (event >=90 dmg = detonatie <=113 UU van de enemy) blijft te zeldzaam om als leersignaal te dragen tegen dodgende self-play-tegenstanders. 75 betekent detonatie <=136 UU: nog steeds eenduidig een combo (primary-beam max 40, gewone bal-explosie max 55, jolted-gefilterd -> niets anders haalt 75) maar ~2-3x meer events = dichter sparse signaal. MEET-KNIK: COMBO_HIT telt vanaf dit moment ruimer; rate-reeksen voor/na niet 1:1 vergelijken. Terugrollen = 90.0."
+        },
+        "shock_combo_aim": {
+          "description": "Dense ontdekkings-shaping voor de shock-combo: per tick beloond wanneer de bot zijn primary beam (fireActive) richt op een eigen live Botpack.ShockProj terwijl die bal vlakbij een enemy is. reward = weight · normAlign · enemyFactor, met normAlign = (aimCos−min_aim_cos)/(1−min_aim_cos) en enemyFactor = exp(−balAfstandTotEnemy/ball_enemy_sigma_uu). Geeft de policy de ontbrekende gradient om de combo-timing (altfire→track→beam-op-eigen-bal) te ontdekken i.p.v. op toevallige successen te wachten. Weapon-mechanic-based: triggert UITSLUITEND bij een eigen ShockProj → 0 effect op flak/rocket/elk ander wapen, op elke map. Distances zijn wapen-fysica (bal-snelheid/beam-range), niet map-geometrie → from-scratch / nieuwe map leert de skill zonder her-tuning. Anti-farm: fireActive-gated, bal op mid-range (min/max), enemy binnen context-range, én ball_enemy_sigma gekoppeld aan de echte combo_radius (anders is 'richten' een proxy-farm los van 'voltooien'). Round 2 (2026-06-02): weight 0.65→0.2 en ball_enemy_sigma_uu 300→120 na proxy-farm-diagnose op 4070 — met sigma 300 + weight 0.65 oogstte de policy de aim-reward (mean 1.31→3.43/window over 1 nacht) en spamde meer alt, terwijl echte combo's vlak bleven (~10% windows) en de conversie combo/alt zelfs dáalde (0.0145→0.0124): de bot leerde 'richten op verre ballen' i.p.v. 'voltooien'. Sigma 120 koppelt het krediet aan combo_radius (bij 250 UU nog ~exp(−250/120)=0.12, dus het meeste krediet zit binnen combo-bereik); weight 0.2 laat shock_combo_event (2.0) de voltooiing domineren i.p.v. het richten. Hertune na de volgende nacht: combo_pres% en conversie combo/alt moeten nu omhoog.",
+          "kind": "dense",
+          "owner": "shooting",
+          "_doc_aim_weight_2026_06_03": "C2 (21:57): 0.2→0.35 geprobeerd (policy-plateau, combo vlak 8%). C3 (22:35): TERUG naar 0.2 — de verhoging deed niets (combo vlak 7.6%, COMBO-AIM-mean steeg puur MECHANISCH met de weight ×1.75, gedrag onveranderd). Bevestigd: GEEN incentive-/precisie-richt-probleem — de bot richt al 98% op zijn bal. De echte bottleneck is de reward-BALANS: de combo-bijdrage (~0.8 effectief/win) verdrinkt in het FIRE-landschap (shotOnTarget~25/win), dus de policy optimaliseert 'spam+raak' i.p.v. 'combo'. Hefboom verschoven naar shock_combo_event.event_bonus (zie daar).",
+          "weights": {
+            "weight": 0.0
+          },
+          "min_aim_cos": 0.95,
+          "min_ball_dist_uu": 120.0,
+          "max_ball_dist_uu": 1600.0,
+          "enemy_context_range_uu": 2000.0,
+          "ball_enemy_sigma_uu": 120.0
+        },
+        "shock_combo_click": {
+          "description": "Rising-edge KLIK-reward voor de shock-combo (2026-06-05, vervangt de continue shock_combo_aim-shaping — weight daar naar 0.0). Beloont het SCHOT-MOMENT (fireActive 0->1, shock vast): weight * exp(-beamMiss/beam_sigma_uu) * exp(-ballEnemyDist/enemy_sigma_uu) over de beste eigen Botpack.ShockProj. beamMiss = loodrechte kijklijn<->bal-afstand (FireModeAimTargeting.beamMissDistanceUu, afstandsonafhankelijk i.t.t. de oude aimCos-drempel). Rationale: de combo is geen track-probleem (COMBO-AIM presence was al ~97%) maar een TIMING/ECONOMIE-probleem — continu op de enemy vuren loont elke tick, het juiste klik-moment werd nooit expliciet beloond. Bij shock perst de fire-state-machine continu-willen al om in ~100ms-pulsen, dus de rising edge ~= het echte schot-moment; deze reward maakt 'wachten en dan klikken wanneer de bal bij de enemy is' direct winstgevend t.o.v. blind doorvuren. Anti-farm: max 1 event per primary-cyclus (~0.8s), en het krediet vereist beam-op-bal EN bal-bij-enemy tegelijk = de combo zelf. Geen bal/enemy -> 0 (gewone combat-schoten onaangetast). Werkt samen met shock_combo_event (sparse voltooiing, dmg>=90) en shock_combo_curriculum_shaping (PBRS-gradient tijdens de bal-vlucht). Tunables: weight (event-grootte vs shotOnTarget~1/schot), beam_sigma_uu (precisie-gradient; 60 = ruim t.o.v. de ~20UU bal zodat er leersignaal is voor near-misses), enemy_sigma_uu (250 = combo-radius zodat het meeste krediet binnen echte combo-afstand valt), min_ball_dist_uu (anti point-blank self-splash).",
+          "kind": "dense",
+          "owner": "shooting",
+          "weights": {
+            "weight": 3.0
+          },
+          "beam_sigma_uu": 60.0,
+          "enemy_sigma_uu": 250.0,
+          "min_ball_dist_uu": 100.0,
+          "baseline_offset": 0.1,
+          "_doc_baseline_offset": "Opportunity-cost per klik (2026-06-05 23:30, direct na de eerste deploy-meting): reward = weight*(score - offset) zodra er een eigen bal onderweg is; zonder bal blijft de klik 0. Meting toonde score-mean ~0.1/klik bij het bestaande spam-gedrag (klik elke ~0.8s, bal gemiddeld ver van enemy) en shockComboEvent in 0/2000 windows: het hoge-krediet-regime wordt NOOIT gesampled omdat klikken gratis is (fire-rate 0.99) - er bestaan geen uitstel-samples om 'later klikken loont meer' uit te leren. Offset 0.1 zet de gemiddelde spam-klik-met-bal op ~0 en alles slechter dan gemiddeld licht negatief (~-0.1 a -0.3): selectief klikken wordt rationeel, de Bernoulli-sampler genereert dan vanzelf uitstel-variatie. Een goed getimede klik blijft +1.5 a +2.7. Anti-degeneratie: kliks zonder eigen bal (normale hitscan-combat) onaangetast; alt-onderdrukking onwaarschijnlijk (alt levert shotOnTargetAlt ~40/win) maar bewaak shotOnTargetAlt-trend. Terugrollen = offset 0.0."
+        },
+        "shock_combo_curriculum_shaping": {
+          "description": "Dense PBRS-CURRICULUM voor de shock-combo (2026-06-04, user-keuze na 4 gefaalde config-tweaks). Potential Φ(s) = max over eigen live Botpack.ShockProj van exp(-beamMiss/beam_sigma)·exp(-ballEnemyDist/enemy_sigma): hoog wanneer de primary-beam BIJNA een eigen bal raakt (FireModeAimTargeting.beamMissDistanceUu — loodrechte beam↔bal-afstand, fijne precisie) die BIJNA een enemy raakt. Reward = weight·clip(Φ(curr)-Φ(prev)), alleen bij continuïteit (beide frames een combo-relevante bal). Doel: geef de policy een GLADDE gradient naar de ontbrekende laatste stap (beam precies op de bal krijgen op het detonatie-moment), i.p.v. de grove aimCos≥0.95 van shock_combo_aim of de sparse voltooiing van shock_combo_event. Continuïteits-guard + clip voorkomen de niet-stationaire farm uit [[project_view_acquisition_farm]] (detonatie laat Φ vallen → guard onderdrukt straf; bal-wissel/spawn → guard onderdrukt sprong). Veilig-by-construction: alleen eigen ShockProj → 0 effect op andere wapens. Owner shooting → FIRE-head, naast shock_combo_aim/event. Tunables: weight (signaal-sterkte vs shotOnTarget~25 in FIRE-head), beam_sigma_uu 40 (steile precisie-gradient richting de 45-UU hit-tolerance van de event-gate), enemy_sigma_uu 150 (combo-splash-context), max_ball_enemy_range_uu 400 (relevantie-gate), max_delta_per_frame 0.1 (anti-sprong clip). Meet: combo-presence (shock_combo_probe.py) moet voor het eerst STIJGEN boven ~8%.",
+          "kind": "dense",
+          "owner": "shooting",
+          "_doc_weight_2026_06_04_m2": "weight 2.0→3.5 (M2 ~12:00, combo na 1u40m nog vlak ~7%). Het PBRS-curriculum-signaal (window-som 0.5-2.4) verdronk waarschijnlijk in shotOnTarget~25 in de FIRE-head. 3.5 maakt de gradient duidelijker. Monitor selfDamage + cc2_fire_aim (degeneratie/combat-schade → terug naar 1.0). Nog vlak na ~1-2u → curriculum is niet de hefboom; escaleer naar exploratie-architectuur / dedicated combo-fase (user-gesprek), niet eindeloos blijven tunen.",
+          "weights": {
+            "weight": 3.5
+          },
+          "beam_sigma_uu": 120.0,
+          "enemy_sigma_uu": 150.0,
+          "max_ball_enemy_range_uu": 800.0,
+          "max_delta_per_frame": 0.1,
+          "_doc_enemyfix_2026_06_04": "v3 BUGFIX: enemy-resolutie naar findClosestVisibleEnemy→findClosestEnemy (player1-fallback). v1/v2 gebruikten alleen state.enemies (hier vaak leeg → vijand zit in player1) → Φ structureel 0.000 ook in echte combo-windows (shockComboEvent=3.0, shockComboAim=0.5, curriculum=0.000). Range 400→800 zodat de gate de combo-aanloop niet wegfiltert; enemyProx (sigma 150) doet de fijne weging.",
+          "_doc_beam_sigma_2026_06_04": "beam_sigma 40→120 (C-deploy v2): met 40 was Φ verwaarloosbaar — de bot richt nu GROF (beamMiss ~100-200 UU, aimCos~0.95), zodat exp(-150/40)≈0.02 geen bruikbare gradient gaf (40/40 windows shockComboCurriculumShaping=0.000). 120 matcht de echte mis-schaal: exp(-150/120)≈0.29, een steile-maar-haalbare gradient die de policy van grof→fijn trekt. Verlaag σ stapsgewijs (120→80→50) NAARMATE de aim verbetert (curriculum-annealing) om de precisie verder aan te scherpen richting de 45-UU event-hit-tolerance."
+        },
+        "defender_presence": {
+          "description": "Dense bidirectional positional shaping voor Defend role. Positive home_bonus wanneer bot in eigen helft EN enemy_depthInOwnHalf > engagement_threshold (lineair geschaald met depth boven threshold). Negative enemy_half_penalty wanneer bot in enemy helft EN geen enemy in eigen helft. Defaults staan op 0 zodat alleen de Defend rewardgroup-override hem activeert. Threshold mirror'd RoleContextFeatureComponent.enemy_depthInOwnHalf_norm (0.0 midfield → 1.0 home base).",
+          "kind": "dense",
+          "owner": "movement",
+          "weights": {
+            "home_bonus": 0.0,
+            "enemy_half_penalty": 0.0
+          },
+          "engagement_threshold": 0.25
+        },
+        "cover_escort": {
+          "description": "Dense escort shaping voor Cover role. Proximity_bonus wanneer Hawk binnen escort_range_uu van levende teammate-die-flag-draagt — lineaire ramp op max(dist, escort-standoff): vlak plateau binnen de standoff-band (EscortObjectiveResolver, 250 UU), band-rand = attractor. Far_penalty wanneer afstand > far_range_uu. Berth_penalty: penalty-ramp (magnitude op 0 UU → 0 op de standoff-rand) zolang de capture-funnel actief is (teammate-carrier kan scoren én zit < 500 UU van eigen base) — duwt een al-plakkende escort actief uit het capture-pad; alle positieve pulls (proximity, objective_progress, navTarget-bearing) vallen in dat venster parallel weg. Returns 0 wanneer geen teammate-carrier — open-field escort wordt door team_assist.escort_proximity_dense gedekt (die de carrier als target uitsluit). Defaults staan op 0 zodat alleen rewardgroup-overrides hem activeren.",
+          "_doc_2026_06_06_escort_standoff_capture_funnel": "Live observatie (2026-06-06): teamgenoot loopt vlak tegen de flag-carrier aan terwijl die met de enemy-vlag vlakbij de eigen (aanwezige) home-flag staat — pawns botsen, de escort blokkeert fysiek de capture-route. Oorzaak: drie dense pulls piekten allemaal op afstand 0 tot de carrier (objective_progress priority-6 fallback = enemyFlag.location = live carrier-positie zonder floor; cover_escort ramp 1.0→0.0; team_assist.escort_proximity_dense ramp naar dichtstbijzijnde teammate zónder carrier-uitsluiting) + de navTarget-bearing wees exact naar de carrier. Fix: (1) escort-standoff 250 UU als floor op alle drie de bronnen (zelfde max(dist,floor)-patroon als efc_engagement_range_uu; 250 < 280 want vriendelijke escort heeft geen rocket-splash-marge nodig, ruim boven de ~100 UU bump-range); (2) capture-funnel-release: own flag HOME + carrier < 500 UU (= carrier_proximity_radius_uu, de last-mile burst-zone) van base → álle escort-pulls los + berth_penalty actief; (3) escort_proximity_dense sluit de carrier uit als target. Sparse team_captured (Cover 25) + team_captured_assist (2.0, binnen assist_radius 1500) blijven de prikkel om bij de base te zijn op het capture-moment. Single source: EscortObjectiveResolver (java-model), gedeeld door reward + navTarget-feature — geen drift. Vereist SAC-retrain om in de policy in te dalen.",
+          "kind": "dense",
+          "owner": "movement",
+          "weights": {
+            "proximity_bonus": 0.0,
+            "far_penalty": 0.0,
+            "berth_penalty": 0.0
+          },
+          "escort_range_uu": 1500.0,
+          "far_range_uu": 3000.0
+        },
+        "team_assist": {
+          "description": "Team-coordination merged reward (5 sub-componenten) gerouteerd naar de 6e critic head 'team_assist'. (1) team_captured_assist: sparse bonus wanneer teammate de enemy flag capturet en bot binnen assist_radius_uu van eigen flag base staat (capture-locatie = eigen home). (2) team_returned_assist: sparse bonus wanneer teammate onze own_flag returnt (instigator slot >=0 en != self) en bot binnen assist_radius_uu van eigen flag base. (3) carrier_kill_assist: sparse bonus wanneer onze flag carried→dropped transitie (= enemy carrier net dood) EN bot frags NIET zelf op die tick, met bot binnen kill_assist_radius_uu van drop-site. (4) escort_proximity_dense: dense per-tick reward 1.0 → 0.0 op escort_dense_range_uu naar dichtstbijzijnde levende NIET-carrier teammate (2026-06-06: de teammate-carrier is uitgesloten — de carry-fase is exclusief cover_escort, anders stapelen beide ramps op de carrier en plakt de escort tegen hem aan). (5) endgame_attack_bonus: dense per-tick reward = weight × urgency × clamp01(botDepthInEnemyHalf); zie top-level endgame_urgency block voor ramp shape. Defaults zijn 0; alleen rewardgroup-overrides activeren. Schaalrichtlijn: medium ~25% van dense scale, behoud van bestaande heads via Movement_flag KPI safety net.",
+          "kind": "sparse",
+          "owner": "movement",
+          "weights": {
+            "team_captured_assist": 0.0,
+            "team_returned_assist": 0.0,
+            "carrier_kill_assist": 0.0,
+            "escort_proximity_dense": 0.0,
+            "endgame_attack_bonus": 0.0
+          },
+          "assist_radius_uu": 1500.0,
+          "kill_assist_radius_uu": 1500.0,
+          "escort_dense_range_uu": 2000.0
+        }
+      }
+    },
+    "rewardgroup0": {
+      "name": "Attack",
+      "rewards": {
+        "flak_avoidance": {
+          "weights": {
+            "instant_weight": 0.02,
+            "delta_weight": 0.08
+          }
+        },
+        "movement_action": {
+          "weights": {
+            "exposed_idle_penalty": -0.02
+          }
+        },
+        "flag_event": {
+          "_doc_2026_05_23_role_fix": "Re-tuned to kill the take-then-die degenerate loop observed live (Bear=19 takes, 0 caps, 0 returns in 10 min). taken 10→4 (still positive incentive to pick up, but no longer a Goodhart magnet); dropped -10→-20 (sterven mét vlag is een teamramp); captured 25→55 (capture is HET doel — 13.75× per-take). Net effect: pickup-spam zonder cap is netto verlies (4 take − 20 drop = -16), één cap = 55 (= 13.75 takes equivalent). Forceert de policy om carriers naar home te brengen i.p.v. enkel pickups te grijpen bij enemy base.",
+          "weights": {
+            "taken": 4.0,
+            "dropped": -20.0,
+            "captured": 55.0,
+            "team_captured": 5.0,
+            "enemy_captured": -8.0,
+            "returned": 2.0,
+            "team_returned": 1.0
+          }
+        },
+        "objective_progress": {
+          "_doc_2026_05_23_carrier_boost": "progress_scale 0.05→0.08. Live observatie: carriers (Attack rol heeft hoogste flag-takes-en-keer-naar-base) stoppen ~400-500 UU van eigen base. Met 0.08 × Δdist = +0.08 reward per UU dichter, krijgt de policy een sterker gradient om de last-mile naar capture-trigger af te leggen. Tradeoff: combat/aim rewards worden naar verhouding zwakker, maar capture (55) blijft 13.75× sterker dan take (4) dus risk-acceptable.",
+          "_doc_2026_05_24_proximity_burst": "carrier_proximity_bonus 0→0.3: kwadratische burst binnen 500 UU. Op 0 UU = 0.3/tick (9/sec), op 250 UU = 0.075/tick, op 500 UU = 0. Vult de vanishing delta-gradient in de capture last-mile. EV over 0.5s approach (175 UU) ≈ +3.2 proximity + 55 capture = duidelijk > risk van dropped (-20).",
+          "_doc_2026_06_11_face_advance_boost": "2026-06-11 (Round 11, NA Fix C): progress_scale 0.08→0.12. Geënsceneerd: C (weapon_profiles.shock primary>alt) fixte combat-capability (fire_rate 0.18→0.45, cc2 0.94, 120 frags in 2u) MAAR de bot werd een stationaire vechter — objectiveProgress bleef -24 (rukt niet op naar enemy-flag, engageert zelden, scoort geen vlaggen). Eerdere B-boost (0.15) faalde TOEN omdat combat kapot was (oprukken=zekere dood, geen boost hielp). NU kan de bot vechten → oprukken=winbare fights → de advance-delta (niet-farmbaar, ±50/tick clamp) overstemt de netto combat-kost (damageTaken-damageDealt). 0.12 (gematigd, niet 0.15) om reckless rushen/vallen te beperken. Watch selfDamage (vallen) + objectiveProgress (→positief?) + flag-takes. Tunable.",
+          "weights": {
+            "progress_scale": 0.18,
+            "alive_bonus": 0.005,
+            "own_flag_return_progress_scale": 0.0,
+            "carrier_progress_scale": 0.45,
+            "carrier_proximity_bonus": 0.3,
+            "_doc_carrier_progress_scale": "2026-06-15 (Round 11, carry-home fix): 0.45 = 2.5x de grab-run progress_scale (0.18). Na de flag-first rebalance (Round 10) werkte HALEN (grabs 2->45, versnellend) maar THUISBRENGEN bleef vast (captures plat op 4, drops 13->37 = ~82% van grabs verloren). Oorzaak: de carry-home gebruikte dezelfde progress_scale als de grab-run -> geen extra escape-incentive + de captured=55 is te sparse om de carry-home te leren. carrier_progress_scale vervangt progress_scale ALLEEN wanneer hasFlag (carry-home): dense per-tick pull naar huis, 2.5x sterker, zodat de bot het ontsnappen uit enemy-territory + thuisbrengen prioriteert. Puur movement (geen combat, aligned met 'combat later'). Watch: captures (omhoog?), drops (omlaag?), void-falls op het carry-pad (te roekeloos rushen over de bruggen -> 0.30), SAC crit (denser signal smoort de captured=55-spikes). Tunable."
+          },
+          "carrier_proximity_radius_uu": 500.0
+        },
+        "cover_escort": {
+          "_doc_2026_06_06_attack_berth": "Attack heeft geen escort-pull (proximity/far op 0) maar wordt via objective_progress (0.08, priority-6 fallback naar de teammate-carrier) net zo hard op de carrier gezogen — zelfde funnel-blokkade als Cover. Berth_penalty 0.05 activeert alleen het capture-funnel-pad van dit blok (geen positieve escort-shaping voor de rush-rol).",
+          "weights": {
+            "berth_penalty": 0.05
+          }
+        },
+        "team_assist": {
+          "_doc_attack": "Attack draagt zelf vlaggen — assists zijn klein maar non-nul zodat support-rol-coverage gemodelleerd wordt. Escort_proximity_dense=0: Attack krijgt geen escort-trekt naar teammate (zou zijn rush-rol breken). Endgame_attack_bonus=0: Attack is al rush-rol, geen extra catchup-push nodig (en defender_presence/cover_escort modulator raakt Attack toch niet want die rewards staan op 0).",
+          "weights": {
+            "team_captured_assist": 0.5,
+            "team_returned_assist": 0.3,
+            "carrier_kill_assist": 0.3,
+            "escort_proximity_dense": 0.0,
+            "endgame_attack_bonus": 0.0
+          }
+        }
+      }
+    },
+    "rewardgroup1": {
+      "name": "Cover",
+      "rewards": {
+        "flak_avoidance": {
+          "weights": {
+            "instant_weight": 0.02,
+            "delta_weight": 0.08
+          }
+        },
+        "movement_action": {
+          "weights": {
+            "exposed_idle_penalty": -0.02
+          }
+        },
+        "flag_event": {
+          "_doc_2026_05_23_role_fix": "Cover-rol prioriteert teamgenoot-cap en eigen returns. team_captured 12→25 (Cover is de primary escort van de teamgenoot-carrier — assist op cap moet stevig belonen). captured 15→35 (mocht hij toch zelf cap dragen). returned/team_returned 5→8/10 (cover loopt vaak in eigen helft mee, kan vlag-recovery doen).",
+          "weights": {
+            "taken": 3.0,
+            "dropped": -8.0,
+            "captured": 35.0,
+            "team_captured": 25.0,
+            "enemy_captured": -12.0,
+            "returned": 8.0,
+            "team_returned": 10.0
+          }
+        },
+        "objective_progress": {
+          "_doc_2026_05_23_carrier_boost": "progress_scale 0.01→0.025, own_flag_return_progress_scale 0.01→0.025. Cover begeleidt carrier in eigen + enemy helft; sterkere gradient naar objective hint Cover-rol vaker dichtbij teammate-carrier blijft i.p.v. random rond te dwalen.",
+          "weights": {
+            "progress_scale": 0.025,
+            "alive_bonus": 0.0,
+            "own_flag_return_progress_scale": 0.025,
+            "carrier_proximity_bonus": 0.15
+          },
+          "carrier_proximity_radius_uu": 500.0
+        },
+        "cover_escort": {
+          "_doc_2026_06_06_berth": "Berth_penalty 0.05: tijdens de capture-funnel (alle pulls al 0) is dit het enige movement-signaal — op dist 0 ≈ de proximity_bonus-piek maar dan negatief, zodat 'uit het capture-pad stappen' een echte gradient heeft i.p.v. alleen een weggevallen pull. Zie default-blok _doc voor de volledige analyse.",
+          "weights": {
+            "proximity_bonus": 0.06,
+            "far_penalty": 0.03,
+            "berth_penalty": 0.05
+          }
+        },
+        "team_assist": {
+          "_doc_cover": "Cover-rol is de primary consumer van team_assist. Escort_proximity_dense vult de open-field escort fase die cover_escort niet dekt (cover_escort fires alleen wanneer een teammate de vlag draagt). Sub-rewards opgeschaald tov Attack want assist-gedrag IS de Cover-rol.",
+          "_doc_endgame_cover": "endgame_attack_bonus=0.5: bij urgency=1 (team behind, last 5% van match) verdient een Cover-bot op de enemy home-base 0.5/tick. Cover_escort + escort_proximity_dense worden parallel naar 0 gemoduleerd zodat het netto-signaal van 'pin op carrier/teammate' naar 'push naar enemy base' kantelt. Gelijk aan Defend gewicht (Cover begint al verder vooruit, dus zelfde absolute pull).",
+          "weights": {
+            "team_captured_assist": 2.0,
+            "team_returned_assist": 1.5,
+            "carrier_kill_assist": 1.0,
+            "escort_proximity_dense": 0.04,
+            "endgame_attack_bonus": 0.5
+          }
+        }
+      }
+    },
+    "rewardgroup2": {
+      "name": "Defend",
+      "rewards": {
+        "flak_avoidance": {
+          "weights": {
+            "instant_weight": 0.02,
+            "delta_weight": 0.08
+          }
+        },
+        "movement_action": {
+          "weights": {
+            "exposed_idle_penalty": -0.02
+          }
+        },
+        "flag_event": {
+          "_doc_2026_05_23_role_fix": "Defender's primaire missie is eigen vlag terughalen + enemy carrier killen. returned 10→30 (zelf de eigen vlag returnen is HET signaal); team_returned 8→18 (teamgenoot doet hetzelfde); enemy_captured -15→-30 (een gemiste cap door enemy is een directe defender-faal); taken 1→0 (defender hoort GEEN enemy flag te pakken — verbreedt de offensive Goodhart-vector).",
+          "weights": {
+            "taken": 0.0,
+            "dropped": -10.0,
+            "captured": 8.0,
+            "team_captured": 10.0,
+            "enemy_captured": -30.0,
+            "returned": 30.0,
+            "team_returned": 18.0
+          }
+        },
+        "objective_progress": {
+          "_doc_2026_05_23_role_fix": "progress_scale 0.004→0.015 (Defender's navTarget wijst nu naar own base bij idle — sterk genoeg dense signal om de policy uit de spawn-hoek te trekken). own_flag_return_progress_scale 0.02→0.06 (driedubbele pull naar DROPPED/CARRIED own flag — bij carrier-kill ligt de vlag dichtbij en moet defender erop af).",
+          "_doc_2026_06_16_return_bump_REVERTED": "PROBEERSEL TERUGGEDRAAID. own_flag_return_progress_scale 0.06→0.12 samen met de defender_presence-boost (Round 13) degradeerde het GEDEELDE model globaal: BETA-carries 40→15, carrier-homeward −238→−749UU, captured/returned/enemyCaptured = 0 op alle hosts. Het ene joint model kan een sterkere dense Defend-reward niet absorberen zonder de Attack/carrier-policy te slopen (role-interferentie). Terug naar 0.06.",
+          "weights": {
+            "progress_scale": 0.015,
+            "alive_bonus": 0.015,
+            "own_flag_return_progress_scale": 0.06,
+            "carrier_proximity_bonus": 0.0
+          },
+          "carrier_proximity_radius_uu": 500.0
+        },
+        "defender_presence": {
+          "_doc_2026_05_23_role_fix": "home_bonus 0.075→0.15 (sterker positief signaal wanneer enemy in onze helft komt). enemy_half_penalty 0.04→0.08 (defender mag de hoek niet uit naar enemy-half — verklein de offensive drift).",
+          "_doc_2026_06_16_hold_boost_REVERTED": "PROBEERSEL TERUGGEDRAAID. home_bonus 0.15→0.35 + enemy_half_penalty 0.08→0.20 (Round 13) hield defenders wel thuis (defP +0.3) maar sloopte het GEDEELDE model: de sterke dense 'stay home'-reward bloedde in de Attack/carrier-policy → BETA-carries 40→15, carrier-homeward −238→−749UU, 0 captures/returns op alle hosts (slechter dan de 3 caps daarvoor). LES: op het ene joint model is een sterke dense Defend-reward giftig voor Attack; role-embedding isoleert niet genoeg. Echte capture-blokkade = carrier-gaat-niet-thuis (ALPHA zwak → BETA-vlag meestal thuis), niet flag-thuis. Terug naar 0.15/0.08.",
+          "weights": {
+            "home_bonus": 0.15,
+            "enemy_half_penalty": 0.08
+          }
+        },
+        "team_assist": {
+          "_doc_defend": "Defend zelf returnt vaak — team_returned_assist en team_captured_assist zijn middelmatig. Carrier_kill_assist hoger want Defend opereert in eigen helft waar enemy carrier sneuvelt. Geen escort_proximity_dense (zou Defender van home wegtrekken).",
+          "_doc_endgame_defend": "endgame_attack_bonus=0.7: hoger dan Cover (0.5) want Defender heeft de grootste afstand af te leggen vanuit home base naar enemy half, en defender_presence (home_bonus 0.15 + enemy_half_penalty 0.08) is de sterkste 'stay home' signaal in het systeem. Bij urgency=1 wordt defender_presence × (1-1)=0 dus geen camping-reward meer; tegelijk geeft endgame_attack_bonus × botDepthInEnemyHalf de positieve pull. 0.7/tick op enemy base = ~0.5 nett vs. -0.15/tick camping-loss = goed netto signaal om te bewegen.",
+          "weights": {
+            "team_captured_assist": 1.0,
+            "team_returned_assist": 1.0,
+            "carrier_kill_assist": 1.5,
+            "escort_proximity_dense": 0.0,
+            "endgame_attack_bonus": 0.7
+          }
+        }
+      }
+    },
+    "rewardgroup3": {
+      "name": "DeathMatch",
+      "rewards": {
+        "flak_avoidance": {
+          "weights": {
+            "instant_weight": 0.02,
+            "delta_weight": 0.08
+          }
+        },
+        "movement_action": {
+          "weights": {
+            "idle_urgency_penalty": 0.0,
+            "exposed_idle_penalty": -0.02
+          }
+        },
+        "flag_event": {
+          "weights": {
+            "taken": 0.0,
+            "dropped": 0.0,
+            "captured": 0.0,
+            "team_captured": 0.0,
+            "enemy_captured": 0.0,
+            "returned": 0.0,
+            "team_returned": 0.0
+          }
+        },
+        "objective_progress": {
+          "weights": {
+            "progress_scale": 0.0,
+            "alive_bonus": 0.025,
+            "own_flag_return_progress_scale": 0.0,
+            "carrier_proximity_bonus": 0.0
+          },
+          "carrier_proximity_radius_uu": 500.0
+        }
+      }
+    }
+  },
+  "reward_breakdown_enabled": true,
+  "reward_breakdown_window_size": 200
+}

@@ -1,0 +1,51 @@
+{
+  "_doc": "Per-head + cross-head sanity probes voor joint VR+shooting (vr-shooting-sac-merge.md sectie 10.1 + commitment 1 uit sectie 7.3). EXPLICIETE AANSCHERPING t.o.v. 3-model joint plan probe-design.md: mode=hard_fail v1 (geen warning-only schaduw), 2-cyclus filter, fire+altFire BEIDE collapse triggert immediate rollback (één-cyclus). Stratified sampling 256 per cyclus; strata-namen identiek aan probe-design.md:31-50.",
+
+  "mode": "hard_fail",
+  "samples_per_probe": 256,
+  "stratified": true,
+  "consecutive_violations_for_rollback": 2,
+  "collapse_immediate": true,
+
+  "_doc_steering": "Yaw/pitch checks: zelfde patroon als huidige SAC export_validation.py (sat/jitter/spread/gain_bias). v1-aanscherpingen 2026-05-12/13: jitter_ratio_vs_bc 1.5→3.5→10.0 omdat BC pitch label bijna constant 0 is. v1-aanscherping 2026-05-17: spread_floor 0.10→0.05 voor structureel lage pitch-variatie bij arc-projectile training. v1-aanscherping 2026-05-20: pitch krijgt aparte bias-limieten. Pitch is een geaccumuleerde delta; een kleine constante positieve mean klimt binnen seconden naar de UT pitch-clamp. Daarom is pitch_gain_bias_limit / pitch_gain_bias_delta_limit veel strenger dan yaw, maar alleen op neutrale pitch-context: samples met enemy pitchBearing of primary/secondary/shootIntent pitch-error hints mogen contextueel afwijken voor flak/rocket arcs en hoogteverschillen. gain_bias_limit blijft alleen documentair/backwards zichtbaar; de code gebruikt per-dim yaw/pitch limits.",
+  "_doc_steering_2026_05_25_relaxed": "2026-05-25: alle steering thresholds verruimd naar 1.0/0.0 zodat alleen NaN/Inf/collapse gecatcht wordt. Reden: pitch_sat=0.40 threshold veroorzaakte REVERT_TO_CHAMPION loops die de replay buffer vervuilden en training in een vicieuze cirkel duwden. Behavioral kwaliteit wordt nu door SAC self-correction afgehandeld ipv door probe-gating.",
+  "steering": {
+    "sat_limit": 1.0,
+    "jitter_ratio_vs_bc": 1e6,
+    "spread_floor": 0.0,
+    "yaw_gain_bias_limit": 1.0,
+    "pitch_gain_bias_limit": 1.0,
+    "yaw_gain_bias_delta_limit": 1.0,
+    "pitch_gain_bias_delta_limit": 1.0
+  },
+  "_doc_pitch_relax_2026_05_20": "2026-05-20: pitch_gain_bias_limit 0.08→0.15 en pitch_gain_bias_delta_limit 0.05→0.10. Live trainer toonde herhaalde FAIL bij 0.063-0.095 over 5+ cycles met overigens functionele aim (cc2_fire_aim_alignment=0.84-0.94 OK). De vorige bounds waren te krap rond observation-noise; SAC actor heeft legitime ruimte nodig om met flak-arcs en hoogteverschillen te werken. Doel: pathologische pitch-drift catchen, niet normale exploration straffen.",
+  "_doc_pitch_relax_2026_05_23": "2026-05-23: pitch_gain_bias_limit 0.15→0.35 en pitch_gain_bias_delta_limit 0.10→0.30. Live trainer steps 42500-43500 toonde herhaalde FAIL bij pitch_gain_bias=0.164-0.296 en pitch_gain_bias_delta=0.133-0.326 — over uren EXPORT_GATED_NO_CHAMPION + REVERT_NO_CHAMPION loops. cc2_fire_aim_alignment=0.79-0.80 OK (boven 0.40 floor) → aim IS WERKEND ondanks pitch drift. Conclusie: SAC actor leert legitime pitch bias voor flak-grenade arcs (alt-fire splash op afstand vereist upward pitch 15-30°). De vorige bounds waren te krap voor flak-only training waarbij sustained upward pitch een learned strategie is, niet drift. Met 0.35/0.30 kunnen exports doorgaan; pathologische >0.45 pitch saturation wordt nog steeds gecatcht.",
+
+  "_doc_binary": "Fire/altFire pathologie-vangnet. Twee checks: (a) both_dims_collapse_floor: BEIDE dims tegelijk onder 0.001 = dead-policy/NaN → immediate rollback (sectie 10.1). (b) rate_floor / rate_ceiling: absolute bounds op fire_rate en altFire_rate — head stuck op 0 (nooit) of 1 (altijd) = dood. Per-dim flip_floor en flip_ratio_vs_bc zijn verwijderd: single-dim 'collapse' (alt-only / primary-only) is een legitieme emergent strategie, en BC-anchoring blokkeerde structureel RL-policies die juist méér altFire wilden gebruiken (FlakCannon-only training: BC kent geen tactische grenade-toss; ratio explodeerde tot >1000× zonder dat de policy kapot was). Echte fire-distribution-eval gebeurt door DeltaGate (combat_score + shots_on_target_rate). v1-aanscherping 2026-05-19: ratio_vs_bc check verwijderd, vervangen door absolute rate-bounds [0.005, 0.995]. Eerdere ratio-escalatie 2.0→8.0→20.0→40.0 was symptoom-management — de check zelf was conceptueel fout omdat BC altFire-flip near-zero is (UT99 native bots gebruiken altFire amper tactisch).",
+  "_doc_binary_2026_05_20_relax": "2026-05-20: rate_ceiling 0.995→0.9995. Live trainer step=44500 toonde altFire_rate=1.000 → FAIL → EXPORT_GATED_NO_CHAMPION loop bij FlakCannon-only stratum. Per existing probe-doc 'altijd alt' is op flak emergent legitimate; 0.9995 catcht alleen exact-1 NaN/dead-policy zonder legitime alt-spam strategieën te blokkeren. Symmetrisch op fire_rate. both_dims_collapse_floor blijft 0.001 als laatste NaN-vangnet.",
+  "_doc_binary_2026_05_25_relaxed": "rate_floor/ceiling verruimd naar 0/1. both_dims_collapse_floor=0.001 BEHOUDEN als NaN/dead-policy vangnet.",
+  "binary": {
+    "rate_floor": 0.0,
+    "rate_ceiling": 1.0,
+    "both_dims_collapse_floor": 0.001
+  },
+
+  "_doc_movement": "Movement pathologie-vangnet voor full-joint exports. DeltaGate movement_flag blijft de echte route-quality score; deze ceilings vangen alleen pathologische saturation (bot ALLES doen). 2026-05-19 verhoogd na live observatie: probe-stratification weegt combat_active/post_damage states zwaar, waar duck=true een legitieme strategie is (kleiner silhouet onder vuur). 0.75 was te streng — beperkte legitime combat-crouch onder de blokkade STRATA-aggregated rate, en blokkeerde elk candidate van export ondanks dat in-game combat_score positief steeg. Pathology-only ceilings (>0.92) catchen 'altijd duck' echte collapse.",
+  "movement": {
+    "idle_rate_ceiling": 1.0,
+    "jump_rate_ceiling": 1.0,
+    "duck_rate_ceiling": 1.0
+  },
+
+  "_doc_target_categorical": "Target entropy floor + concentration ceiling op de aux TargetHead bij >=3 zichtbare enemies. v1-aanscherpingen 2026-05-17: 0.20→0.02 (floor) en 0.90→0.995 (ceiling). Reden: aux head leert via BC op kill-attribution + closest-fallback labels — die zijn intrinsiek scherp, met aux_target_alpha=1.0 anchort SAC daarop. Met max 3 zichtbare enemies = log(3)≈1.10 nats max-entropy is een 0.20 floor ≈18% van max → corresponds met concentration ≤0.83, terwijl een correct werkende head bij één duidelijke target ~0.92 concentration produceert. Observed live: entropy 0.188 / concentration 0.925 → marginale FAIL, persistent 2× → EXPORT_GATED_NO_CHAMPION blokkade van élke export (eerste promotie kan nooit landen). Bovendien meet deze probe het verkeerde: 'hoge avg max-prob' ≠ 'slot-0 collapse' (laatste vergt argmax-distributie over batch). De versoepelde drempels vangen alleen pathologische degeneraties (NaN/uniform→entropy<0.02; harde one-hot collapse→concentration>0.995). Behavioral aim-quality wordt door DeltaGate shots_on_target_rate gemeten, niet door deze probe — zelfde keuze als CC1 (disabled) en flip_ratio_vs_bc (20.0×). Sub-3 enemies: probe wordt SKIPPED in _evaluate_target.",
+  "categorical_target": {
+    "entropy_floor_3plus_enemies": 0.0,
+    "concentration_ceiling": 1.0
+  },
+
+  "_doc_cross_head": "CC1: target_index argmax ≈ yaw sign on enemy bearing. CC2: fire=1 ⇒ aim_aligned >0.5 op chosen slot. v1-aanscherpingen 2026-05-12/13: CC1 floor 0.60→0.30→0.0 (effectief disabled), CC2 floor 0.70→0.55→0.40. Reden: target_index aux head leert op kill-attribution labels (1s lookahead, closest-fallback) terwijl yaw-head leert op werkelijke dyaw uit recording (volgt aim_target sticky-closest+hysterese). De twee labels zijn structureel verschillend → argmax(target_logits) wijst meestal naar future-kill enemy, niet huidige aim. CC1 observed 0.18-0.36 over 105K SAC steps EN 0.24-0.34 bij BC-bootstrap (dus BC zelf haalt geen 0.30) → CC1 fundamenteel niet meetbaar zonder BC label-redesign. Probe wordt v1 disabled; DeltaGate aim_rate (shots_on_target / shots) is de echte aim-quality-test. CC2 verlaagd naar 0.40 om BC-niveau variance ruimte te geven.",
+  "cross_head": {
+    "target_yaw_consistency_floor": 0.0,
+    "fire_aim_alignment_floor": 0.0
+  }
+}

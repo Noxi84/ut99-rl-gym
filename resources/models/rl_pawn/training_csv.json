@@ -1,0 +1,19 @@
+{
+  "_doc": "Joint CSV-generatie: 30 Hz uniform (matched aan VR's huidige CSV-pipeline en de joint runtime). target_lookahead_frames=1 voor VR yaw/pitch frame-delta labels (huidige VR-conventie). bc_yaw/pitch_target_scale gelijk aan VR. state_bucket_key is gededupliceerde unie van VR + shooting buckets — preserveert VR's yaw/mission/engagement-aware dedup samen met shooting's enemy0_visible/isAlive context (vereist voor bucket-balans tussen aim-moments en non-combat frames).",
+  "enabled": true,
+  "csv_fps": 30,
+  "number_of_columns": 0,
+  "target_lookahead_frames": 1,
+  "bc_yaw_target_scale": 1000,
+  "bc_pitch_target_scale": 800,
+  "state_bucket_key": [
+    "self_locationX",
+    "self_locationY",
+    "self_hasFlag",
+    "viewYawBucket16",
+    "missionBucket",
+    "engagementBucket",
+    "enemy0_isAlive",
+    "enemy0_visible"
+  ]
+}

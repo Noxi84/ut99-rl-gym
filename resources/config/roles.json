@@ -1,0 +1,6 @@
+{
+  "_doc": "Bindings van architecturale ModelRole (java-aiplay) naar concrete model-keys (resources/models/*). ModelRole.configKey() == lowercase enum-naam met underscores. Joint rl_pawn is de enige low-level policy in productie.",
+  "bindings": {
+    "pawn_policy": "rl_pawn"
+  }
+}

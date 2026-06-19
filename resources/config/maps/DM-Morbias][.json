@@ -1,0 +1,323 @@
+{
+  "map_id" : 16,
+  "map_norm" : {
+    "bounds_min_x" : -1544.0,
+    "bounds_max_x" : 2400.0,
+    "bounds_min_y" : -1920.0,
+    "bounds_max_y" : 4468.0,
+    "bounds_min_z" : -256.0,
+    "bounds_max_z" : 1120.0,
+    "edge" : 0.98,
+    "k" : 3.0
+  },
+  "symmetric" : false,
+  "geodesic_field" : false,
+  "spawn_points" : [
+    {
+      "location" : [
+        597.081421,
+        -356.172241,
+        202.0
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        229.102173,
+        -1263.83728,
+        -85.5
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -275.448029,
+        1277.338013,
+        -85.5
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -1.424299,
+        1015.245789,
+        -85.5
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        2.643469,
+        -973.364136,
+        -85.5
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        2.720849,
+        -1621.315918,
+        226.5
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -0.628921,
+        1660.663574,
+        226.5
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -905.888489,
+        2.983083,
+        234.5
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        686.15686,
+        -5.430699,
+        234.5
+      ],
+      "team" : 0
+    }
+  ],
+  "jump_pads" : [ ],
+  "pickups" : [
+    {
+      "type" : "UT_Eightball",
+      "category" : "weapon",
+      "location" : [
+        -6.045,
+        1335.06,
+        -117.9
+      ]
+    },
+    {
+      "type" : "UT_Eightball",
+      "category" : "weapon",
+      "location" : [
+        -11.602,
+        -608.804,
+        170.098
+      ]
+    },
+    {
+      "type" : "UT_Eightball",
+      "category" : "weapon",
+      "location" : [
+        -0.921,
+        615.536,
+        170.101
+      ]
+    },
+    {
+      "type" : "UT_Eightball",
+      "category" : "weapon",
+      "location" : [
+        -8.574,
+        -1310.91,
+        -117.9
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        389.361,
+        -847.172,
+        204.1
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        889.545,
+        -350.319,
+        204.101
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        895.062,
+        395.361,
+        204.1
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        412.176,
+        836.841,
+        204.098
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        -830.709,
+        400.288,
+        204.099
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        -865.39,
+        -378.651,
+        204.101
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        -365.907,
+        -879.954,
+        204.1
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        673.896,
+        90.951,
+        -115.9
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        670.279,
+        -80.438,
+        -115.9
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        -669.289,
+        -99.862,
+        -115.9
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        -665.673,
+        83.858,
+        -115.9
+      ]
+    },
+    {
+      "type" : "WarheadLauncher",
+      "category" : "weapon",
+      "location" : [
+        2.196,
+        -0.469,
+        -88.902
+      ]
+    }
+  ],
+  "movers" : [
+    {
+      "name" : "Mover3",
+      "subclass" : "Mover",
+      "initial_state" : "StandOpenTimed",
+      "base_location" : [
+        0.0,
+        1856.0,
+        -64.0
+      ],
+      "key_positions" : [
+        [
+          0.0,
+          1856.0,
+          -64.0
+        ],
+        [
+          0.0,
+          1856.0,
+          180.0
+        ]
+      ],
+      "platform_bounds_local" : {
+        "min" : [
+          -128.0,
+          -64.0,
+          -64.0
+        ],
+        "max" : [
+          128.0,
+          64.0,
+          16.0
+        ]
+      },
+      "move_time" : 1.5,
+      "stay_open_time" : 2.0,
+      "delay_time" : 0.0,
+      "num_keys" : 2,
+      "glide_type" : "Linear",
+      "encroach_type" : "Return",
+      "bump_type" : "PawnBump",
+      "tag" : "Red"
+    },
+    {
+      "name" : "Mover5",
+      "subclass" : "Mover",
+      "initial_state" : "StandOpenTimed",
+      "base_location" : [
+        0.0,
+        -1856.0,
+        -64.0
+      ],
+      "key_positions" : [
+        [
+          0.0,
+          -1856.0,
+          -64.0
+        ],
+        [
+          0.0,
+          -1856.0,
+          180.0
+        ]
+      ],
+      "platform_bounds_local" : {
+        "min" : [
+          -128.0,
+          -64.0,
+          -64.0
+        ],
+        "max" : [
+          128.0,
+          64.0,
+          16.0
+        ]
+      },
+      "move_time" : 1.5,
+      "stay_open_time" : 2.0,
+      "delay_time" : 0.0,
+      "num_keys" : 2,
+      "glide_type" : "Linear",
+      "encroach_type" : "Return",
+      "bump_type" : "PawnBump",
+      "tag" : "Blue"
+    }
+  ],
+  "elevator_triggers" : [ ]
+}

@@ -1,0 +1,399 @@
+{
+  "map_id" : 14,
+  "map_norm" : {
+    "bounds_min_x" : -1088.0,
+    "bounds_max_x" : 1152.0,
+    "bounds_min_y" : -1536.0,
+    "bounds_max_y" : 2048.0,
+    "bounds_min_z" : -1184.0,
+    "bounds_max_z" : 752.0,
+    "edge" : 0.98,
+    "k" : 3.0
+  },
+  "symmetric" : false,
+  "geodesic_field" : false,
+  "spawn_points" : [
+    {
+      "location" : [
+        384.0,
+        336.0,
+        -472.0
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        664.0,
+        360.0,
+        -280.0
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -112.0,
+        712.0,
+        -472.0
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -400.0,
+        856.0,
+        -280.0
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -392.0,
+        376.0,
+        -472.0
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -407.224,
+        -390.591,
+        -472.0
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -664.0,
+        -440.0,
+        -280.0
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        120.0,
+        -696.0,
+        -472.0
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        416.0,
+        -400.0,
+        -472.0
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        408.0,
+        -888.0,
+        -280.0
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        640.0,
+        512.0,
+        74.5
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -640.698,
+        512.0,
+        74.5
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -640.0,
+        -512.0,
+        74.5
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        640.0,
+        -512.0,
+        74.5
+      ],
+      "team" : 1
+    }
+  ],
+  "jump_pads" : [
+    {
+      "location" : [
+        -0.456,
+        0.035,
+        -503.879
+      ],
+      "velocity" : [
+        0.0,
+        0.0,
+        550.0
+      ]
+    }
+  ],
+  "pickups" : [
+    {
+      "type" : "PulseGun",
+      "category" : "weapon",
+      "location" : [
+        -642.989,
+        45.046,
+        -289.901
+      ]
+    },
+    {
+      "type" : "Minigun2",
+      "category" : "weapon",
+      "location" : [
+        639.051,
+        48.597,
+        -311.901
+      ]
+    },
+    {
+      "type" : "UT_BioRifle",
+      "category" : "weapon",
+      "location" : [
+        -52.055,
+        -701.892,
+        -492.902
+      ]
+    },
+    {
+      "type" : "UT_FlakCannon",
+      "category" : "weapon",
+      "location" : [
+        -40.485,
+        742.693,
+        -488.899
+      ]
+    },
+    {
+      "type" : "FlakAmmo",
+      "category" : "ammo",
+      "location" : [
+        41.595,
+        738.233,
+        -500.902
+      ]
+    },
+    {
+      "type" : "MiniAmmo",
+      "category" : "ammo",
+      "location" : [
+        633.381,
+        -47.917,
+        -308.901
+      ]
+    },
+    {
+      "type" : "PAmmo",
+      "category" : "ammo",
+      "location" : [
+        -643.171,
+        -47.016,
+        -307.901
+      ]
+    },
+    {
+      "type" : "BioAmmo",
+      "category" : "ammo",
+      "location" : [
+        36.848,
+        -700.328,
+        -502.899
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        318.334,
+        -894.895,
+        48.101
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        447.074,
+        -768.206,
+        48.101
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        572.739,
+        -641.004,
+        48.101
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        -322.093,
+        -895.267,
+        48.101
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        -450.604,
+        -766.528,
+        48.101
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        -578.604,
+        -637.789,
+        48.101
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        -320.881,
+        895.134,
+        48.101
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        -449.523,
+        768.346,
+        48.101
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        -575.09,
+        641.047,
+        48.101
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        319.544,
+        896.0,
+        48.101
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        448.155,
+        767.36,
+        48.101
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        576.254,
+        638.719,
+        48.101
+      ]
+    },
+    {
+      "type" : "BulletBox",
+      "category" : "ammo",
+      "location" : [
+        -442.948,
+        -379.158,
+        -501.902
+      ]
+    },
+    {
+      "type" : "BulletBox",
+      "category" : "ammo",
+      "location" : [
+        -438.348,
+        -444.925,
+        -501.902
+      ]
+    },
+    {
+      "type" : "BulletBox",
+      "category" : "ammo",
+      "location" : [
+        425.35,
+        -473.099,
+        -501.901
+      ]
+    },
+    {
+      "type" : "BulletBox",
+      "category" : "ammo",
+      "location" : [
+        453.173,
+        -399.959,
+        -501.9
+      ]
+    },
+    {
+      "type" : "BulletBox",
+      "category" : "ammo",
+      "location" : [
+        468.461,
+        396.501,
+        -501.903
+      ]
+    },
+    {
+      "type" : "BulletBox",
+      "category" : "ammo",
+      "location" : [
+        427.155,
+        431.188,
+        -501.902
+      ]
+    },
+    {
+      "type" : "BulletBox",
+      "category" : "ammo",
+      "location" : [
+        -430.04,
+        479.205,
+        -501.899
+      ]
+    },
+    {
+      "type" : "BulletBox",
+      "category" : "ammo",
+      "location" : [
+        -453.366,
+        418.719,
+        -501.899
+      ]
+    }
+  ],
+  "movers" : [ ],
+  "elevator_triggers" : [ ]
+}

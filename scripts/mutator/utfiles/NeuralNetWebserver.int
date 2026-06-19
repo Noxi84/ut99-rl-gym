@@ -1,0 +1,5 @@
+[Public]
+Preferences=(Caption="UT NeuralNet WebServer",Parent="Networking",Class=NeuralNetWebserver.NeuralNetWebserver)
+
+[WebServer]
+ClassCaption="UT NeuralNet WebServer"

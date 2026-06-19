@@ -1,0 +1,204 @@
+{
+  "jvm": {
+    "_doc": "Heap = heap_base_mb + instances*heap_per_instance_mb. Alle bots van een machine draaien in ÉÉN JVM, dus elke GC-pauze bevriest alle bots tegelijk. gc=zgc → generational ZGC (Java 25): volledig concurrent, sub-ms pauzes i.p.v. G1's gemeten ~24ms young-GC freezes elke ~3.8s (491 GCs/31min op 4070), die bij de 50Hz command-loop >1 command-cyclus opslokken en als hapering zichtbaar worden. initial_heap_fraction zet -Xms = fractie*-Xmx zodat de heap niet vanaf 256MB hoeft te groeien (vermijdt vroege GC's + resize-jitter); fysieke RSS volgt werkelijk gebruik (lazy touch) en ZGC's ZUncommit geeft ongebruikte heap terug aan de OS. heap_per_instance_mb=3000 → Xmx ~22GB bij 7 bots: gemeten live-set is ~11GB (jcmd GC.heap_info), dus ~2x headroom. Was 4000 (Xmx 29GB), wat op de 4070 28GB committeerde voor 11GB live en de machine naar ~92% RAM + native-thread-OOM duwde — onder hoge flush-allocatiedruk kan ZUncommit het plafond niet terugbrengen, dus het plafond zelf moet lager. Verhoog terug als jcmd GC.heap_info aanhoudend >~18GB used toont. De uit deze formule berekende -Xmx wordt per machine begrensd door servers.json capacity.jvm_heap_max_mb: ZGC backt zijn heap met shared memory en multi-mapt die, dus de fysieke RSS (anon-rss + shmem-rss) is ~2x -Xmx. Op RAM-krappe machines triggert dat de kernel-OOM-killer — de 3070 (32GB, 5 instances -> formule 16GB) liep ~elke 30-60min OOM tot het plafond op 11GB capte. Op machines met RAM-ruimte (4070 64GB, formule 22GB < plafond 28GB) wint de formule en bijt het plafond niet. Geen fallback: een ontbrekende key crasht de bot-start.",
+    "heap_base_mb": 1000,
+    "heap_per_instance_mb": 3000,
+    "gc": "zgc",
+    "initial_heap_fraction": 0.5
+  },
+  "unreal_tournament_window_name": "Unreal Tournament",
+  "position_trace": {
+    "_doc": "Self-bootstrapping bron voor het geodesic distance field (docs/rewards/geodesic-distance-field.md): elke bot logt zijn eigen positie (rate-limited) naar $SESSIONS_DIR/position-traces/pos_<start>_<pid>.csv. build-geodesic-field.sh pull't deze van alle servers en voedt er de bezoekgraaf mee — gespeelde minuten worden veld-dekking zonder demo-opnames. min_interval_ms moet < 600 blijven (builder max-frame-gap, anders verbinden samples niet tot transities). retention_days ruimt oude trace-files op bij JVM-start. Overhead: ~7 regels/s per bot; I/O-fouten schakelen de tracer uit zonder de bot-loop te raken.",
+    "enabled": true,
+    "min_interval_ms": 150,
+    "retention_days": 7
+  },
+  "ut99_server": {
+    "ut_neuralnet_server": "http://127.0.0.1:8080/utneuralnet/",
+    "uweb_listen_port": 8080,
+    "port": 7777,
+    "min_players": 1
+  },
+  "ut99": {
+    "install_root": "/home/kris/.local/share/OldUnreal/UnrealTournament"
+  },
+  "ut99_player": {
+    "name": "MrPython",
+    "team": 1,
+    "role": "DeathMatch"
+  },
+  "recording": {
+    "player_name": "Noxi",
+    "keys": {
+      "jump": "space",
+      "duck": "c",
+      "move_forward": "z",
+      "move_backward": "s",
+      "move_left": "a",
+      "move_right": "d",
+      "fire": "p",
+      "altfire": "i"
+    }
+  },
+  "logging": {
+    "enabled": true,
+    "level": "INFO",
+    "max_bytes": 10000000,
+    "max_files": 10
+  },
+  "shooting": {
+    "_doc": "Per-weapon per-mode fire/cooldown timings. 'kind' (optional, default 'edge'): 'edge' = state machine FIRING(fire_duration_ms)+COOLDOWN(cooldown_ms) cycle, voor wapens waarvan UC's NormalFire animatie-Sleep tweede fire-edges negeert (instagib/shock/flak/sniper). 'hold' = pass-through bit=modelWants, fire/cooldown velden genegeerd, voor sustained-fire (pulse-primary/minigun/ripper-primary), charge (bio-alt), multi-load (eightball), repeat-fire (enforcer alt). Single shot in hold-mode blijft mogelijk via 1-tick bit=1 → UC rising edge → 1 schot. fire_duration + cooldown waarden zijn alleen relevant in edge-mode (≥ cycle + ~50ms marge).",
+    "weapons": {
+      "instagib": {
+        "_cycle_ms": 1136,
+        "class": "Botpack.SuperShockRifle",
+        "primary": {"fire_duration_ms": 100, "cooldown_ms": 1090}
+      },
+      "shockrifle": {
+        "_cycle_ms_primary": 794,
+        "_cycle_ms_secondary": 521,
+        "class": "Botpack.ShockRifle",
+        "primary":   {"fire_duration_ms": 100, "cooldown_ms": 750},
+        "secondary": {"fire_duration_ms": 100, "cooldown_ms": 470}
+      },
+      "flak": {
+        "_cycle_ms_primary": 1455,
+        "_cycle_ms_secondary": 1750,
+        "class": "Botpack.UT_FlakCannon",
+        "primary":   {"fire_duration_ms": 100, "cooldown_ms": 1410},
+        "secondary": {"fire_duration_ms": 100, "cooldown_ms": 1700}
+      },
+      "sniperrifle": {
+        "_cycle_ms": 667,
+        "class": "Botpack.SniperRifle",
+        "primary": {"fire_duration_ms": 100, "cooldown_ms": 620}
+      },
+      "biorifle": {
+        "_cycle_ms_primary": 1500,
+        "_doc_primary": "Hold-mode: rapid-spam kleine goo blobs zolang bFire=1.",
+        "_doc_secondary": "Hold-mode: charge-mechanic. Bot houdt bAltFire vast om ChargeSize op te bouwen (0..10), laat los om te vuren.",
+        "class": "Botpack.UT_BioRifle",
+        "primary":   {"fire_duration_ms": 100, "cooldown_ms": 1450, "kind": "hold"},
+        "secondary": {"fire_duration_ms": 100, "cooldown_ms": 1450, "kind": "hold"}
+      },
+      "eightball": {
+        "_cycle_ms": 1000,
+        "_doc": "Hold-mode: multi-load mechanic. Bot houdt bFire (rockets) of bAltFire (granaten) ingedrukt om tot 6 te laden (~0.7s per slot), laat los om te vuren. Single shot mogelijk via 1-tick bit=1. multiCount feature toont realtime load-status (0..6 normalized).",
+        "class": "Botpack.UT_Eightball",
+        "primary":   {"fire_duration_ms": 100, "cooldown_ms": 950, "kind": "hold"},
+        "secondary": {"fire_duration_ms": 100, "cooldown_ms": 950, "kind": "hold"}
+      },
+      "ripper": {
+        "_cycle_ms_primary": 769,
+        "_cycle_ms_secondary": 1429,
+        "_doc_primary": "Hold-mode: sustained razor spam zolang bFire=1.",
+        "_doc_secondary": "Edge-mode: single explosive blade per click (lange cooldown).",
+        "class": "Botpack.Ripper",
+        "primary":   {"fire_duration_ms": 100, "cooldown_ms": 720, "kind": "hold"},
+        "secondary": {"fire_duration_ms": 100, "cooldown_ms": 1380}
+      },
+      "enforcer": {
+        "_cycle_ms_primary": 823,
+        "_cycle_ms_secondary": 533,
+        "_doc_primary": "Hold-mode: repeat fire zolang bFire=1.",
+        "_doc_secondary": "Hold-mode: rapid alt-fire loop in state AltFiring. Bot houdt bAltFire ingedrukt voor auto-fire continuation.",
+        "class": "Botpack.Enforcer",
+        "primary":   {"fire_duration_ms": 100, "cooldown_ms": 780, "kind": "hold"},
+        "secondary": {"fire_duration_ms": 100, "cooldown_ms": 490, "kind": "hold"}
+      },
+      "doubleenforcer": {
+        "_cycle_ms_primary": 411,
+        "_doc": "Hold-mode beide modes: alterneert L/R fire zolang bit=1. Effective cycle ~411ms primary, ~533ms secondary.",
+        "class": "Botpack.DoubleEnforcer",
+        "primary":   {"fire_duration_ms": 60, "cooldown_ms": 360, "kind": "hold"},
+        "secondary": {"fire_duration_ms": 100, "cooldown_ms": 490, "kind": "hold"}
+      },
+      "minigun": {
+        "_cycle_ms_primary": 130,
+        "_cycle_ms_secondary": 667,
+        "_doc_primary": "Hold-mode: UT99 vuurt zelf elke 130ms zolang bFire=1 (state NormalFire Sleep(0.13); Goto('Begin')). Pass-through laat de native UC cycle vrij draaien op 7.7 Hz.",
+        "_doc_secondary": "Hold-mode: zoomed/accuracy spray loop.",
+        "class": "Botpack.Minigun2",
+        "primary":   {"fire_duration_ms": 40, "cooldown_ms": 100, "kind": "hold"},
+        "secondary": {"fire_duration_ms": 100, "cooldown_ms": 620, "kind": "hold"}
+      },
+      "pulsegun": {
+        "_cycle_ms_primary": 180,
+        "_cycle_ms_secondary": 240,
+        "_doc_primary": "Hold-mode: state NormalFire Sleep(0.18); Finish(). Continu pulses bij bFire=1 via Finish→Global.Fire loop op native 5.6 Hz (180ms).",
+        "_doc_secondary": "Hold-mode: pulse beam — 240ms damage-tick per ammo unit zolang bAltFire=1. Pass-through bewaart beam-buildup (damage stijgt met aanhoudende on-target tijd).",
+        "class": "Botpack.PulseGun",
+        "primary":   {"fire_duration_ms": 40, "cooldown_ms": 150, "kind": "hold"},
+        "secondary": {"fire_duration_ms": 60, "cooldown_ms": 200, "kind": "hold"}
+      }
+    }
+  },
+  "viewrotation": {
+    "max_viewrotation_x": 65536.0,
+    "pitch_clamp": 12000
+  },
+  "state_push": {
+    "fps": 50
+  },
+  "command_controller": {
+    "general": {
+      "controller_fps": 50,
+      "min_movement_dwell_ms": 67,
+      "dedupe_threshold_ut": 1,
+      "view_turn_intent_max_age_ms": 250,
+      "collision_wall_threshold_norm": 0.15,
+      "jump_cooldown_ms": 700,
+      "duck_cooldown_ms": 0
+    },
+    "yaw_heading": {
+      "continuous_max_step": 3000,
+      "dead_zone_rad": 0.0
+    },
+    "pitch": {
+      "continuous_max_step": 960,
+      "min_signed": -16384,
+      "max_signed": 18000,
+      "center_decay_rate": 0.08,
+      "dead_zone_rad": 0.0
+    }
+  },
+  "mission": {
+    "mission_annotator_fps": 5,
+    "mission_min_dwell_ms": 750,
+    "anti_stuck_speed_norm_threshold": 0.05,
+    "anti_stuck_forward_collision_threshold_norm": 0.12,
+    "anti_stuck_forward_diag_collision_threshold_norm": 0.15,
+    "anti_stuck_trigger_ms": 3000,
+    "anti_stuck_recovery_ms": 1000
+  },
+  "weapon_planner": {
+    "fps": 2,
+    "dwell_ms": 3000
+  },
+  "tactical": {
+    "tactical_min_dwell_ms": 500,
+    "carrier_line_margin_norm": 0.03,
+    "carrier_grace_ms": 300
+  },
+  "engagement": {
+    "engagement_min_dwell_ms": 300,
+    "attention_target_min_dwell_ms": 200,
+    "commit_shot_hold_ms": 500,
+    "visible_grace_ms": 400,
+    "commit_shot_distance_threshold": 0.3
+  },
+  "inference": {
+    "batching": {
+      "_doc": "Cross-bot ONNX batching: alle bot-predicts in 1 JVM coalescen tot 1 [N][T][F] session.run. submit_timeout_ms is de wachttijd op de batch-future voordat de executor faalt (OrtException → gemiste tick → zichtbare freeze, want no-fallback-movement). Gemeten stalls op de gedeelde GPU_NATIVE_EXECUTOR (model-reload + geheugendruk) lopen tot ~500ms; 150ms was te krap en gaf bursts van gelijktijdige timeouts over alle bots (980 in enkele uren op 4070, exact gecorreleerd met GPU_EXECUTOR_STALL). 1000ms = ~2x worst-case stall: bot wacht de stall uit i.p.v. te falen. Resterende stall-bron (createSession onder de write-lock op de inference-thread) is een aparte optimalisatie.",
+      "enabled": true,
+      "max_batch_size": 128,
+      "submit_timeout_ms": 1000
+    }
+  },
+  "aim_target": {
+    "unseen_before_switch_ms": 500,
+    "unseen_force_switch_ms": 800,
+    "switch_distance_ratio": 0.7,
+    "min_commit_ms": 300
+  }
+}

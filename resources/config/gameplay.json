@@ -1,0 +1,292 @@
+{
+  "near_dist_norm": 0.2,
+  "weapon_profile": "shock",
+  "match_time_minutes": 10,
+  "flag_drop_auto_return_seconds": 25.0,
+  "mapName": "CTF-andACTION?game=Botpack.CTFGame?GoalTeamScore=0?MinPlayers=10",
+  "ai_bots": [
+    {
+      "name": "[BETA]Falcon",
+      "team": 1,
+      "active": true,
+      "role": "Attack",
+      "preferred_weapon": "shock",
+      "appearance": {
+        "class": "TFemale1Bot",
+        "skin": "FCommandoSkins.aphe",
+        "face": "FCommandoSkins.Indina",
+        "voice": "BotPack.VoiceFemaleOne"
+      },
+      "models": {
+        "rl_pawn": {
+          "enabled": true,
+          "snapshot": "current"
+        }
+      }
+    },
+    {
+      "name": "[BETA]Wolf",
+      "team": 1,
+      "active": true,
+      "role": "Attack",
+      "preferred_weapon": "shock",
+      "appearance": {
+        "class": "TFemale1Bot",
+        "skin": "FCommandoSkins.aphe",
+        "face": "FCommandoSkins.Indina",
+        "voice": "BotPack.VoiceFemaleOne"
+      },
+      "models": {
+        "rl_pawn": {
+          "enabled": true,
+          "snapshot": "current"
+        }
+      }
+    },
+    {
+      "name": "[BETA]Hawk",
+      "team": 1,
+      "active": true,
+      "role": "Attack",
+      "preferred_weapon": "shock",
+      "appearance": {
+        "class": "TFemale2Bot",
+        "skin": "SGirlSkins.fbth",
+        "face": "SGirlSkins.Annaka",
+        "voice": "BotPack.VoiceFemaleTwo"
+      },
+      "models": {
+        "rl_pawn": {
+          "enabled": true,
+          "snapshot": "current"
+        }
+      }
+    },
+    {
+      "name": "[BETA]Bear",
+      "team": 1,
+      "active": true,
+      "role": "Attack",
+      "preferred_weapon": "shock",
+      "appearance": {
+        "class": "TFemale1Bot",
+        "skin": "FCommandoSkins.daco",
+        "face": "FCommandoSkins.Jayce",
+        "voice": "BotPack.VoiceFemaleOne"
+      },
+      "models": {
+        "rl_pawn": {
+          "enabled": true,
+          "snapshot": "current"
+        }
+      }
+    },
+    {
+      "name": "[BETA]Boar",
+      "team": 1,
+      "active": true,
+      "role": "Attack",
+      "preferred_weapon": "shock",
+      "appearance": {
+        "class": "TFemale1Bot",
+        "skin": "FCommandoSkins.daco",
+        "face": "FCommandoSkins.Jayce",
+        "voice": "BotPack.VoiceFemaleOne"
+      },
+      "models": {
+        "rl_pawn": {
+          "enabled": true,
+          "snapshot": "current"
+        }
+      }
+    },
+    {
+      "name": "[ALPHA]Falcon",
+      "team": 0,
+      "active": true,
+      "role": "Attack",
+      "preferred_weapon": "shock",
+      "appearance": {
+        "class": "TFemale1Bot",
+        "skin": "FCommandoSkins.aphe",
+        "face": "FCommandoSkins.Indina",
+        "voice": "BotPack.VoiceFemaleOne"
+      },
+      "models": {
+        "rl_pawn": {
+          "enabled": true,
+          "snapshot": "rl_pawn/newest"
+        }
+      }
+    },
+    {
+      "name": "[ALPHA]Wolf",
+      "team": 0,
+      "active": true,
+      "role": "Attack",
+      "preferred_weapon": "shock",
+      "appearance": {
+        "class": "TFemale1Bot",
+        "skin": "FCommandoSkins.aphe",
+        "face": "FCommandoSkins.Indina",
+        "voice": "BotPack.VoiceFemaleOne"
+      },
+      "models": {
+        "rl_pawn": {
+          "enabled": true,
+          "snapshot": "rl_pawn/newest"
+        }
+      }
+    },
+    {
+      "name": "[ALPHA]Hawk",
+      "team": 0,
+      "active": true,
+      "role": "Attack",
+      "preferred_weapon": "shock",
+      "appearance": {
+        "class": "TFemale2Bot",
+        "skin": "SGirlSkins.fbth",
+        "face": "SGirlSkins.Annaka",
+        "voice": "BotPack.VoiceFemaleTwo"
+      },
+      "models": {
+        "rl_pawn": {
+          "enabled": true,
+          "snapshot": "rl_pawn/newest"
+        }
+      }
+    },
+    {
+      "name": "[ALPHA]Bear",
+      "team": 0,
+      "active": true,
+      "role": "Attack",
+      "preferred_weapon": "shock",
+      "appearance": {
+        "class": "TFemale1Bot",
+        "skin": "FCommandoSkins.daco",
+        "face": "FCommandoSkins.Jayce",
+        "voice": "BotPack.VoiceFemaleOne"
+      },
+      "models": {
+        "rl_pawn": {
+          "enabled": true,
+          "snapshot": "rl_pawn/newest"
+        }
+      }
+    },
+    {
+      "name": "[ALPHA]Boar",
+      "team": 0,
+      "active": true,
+      "role": "Attack",
+      "preferred_weapon": "shock",
+      "appearance": {
+        "class": "TFemale1Bot",
+        "skin": "FCommandoSkins.daco",
+        "face": "FCommandoSkins.Jayce",
+        "voice": "BotPack.VoiceFemaleOne"
+      },
+      "models": {
+        "rl_pawn": {
+          "enabled": true,
+          "snapshot": "current"
+        }
+      }
+    }
+  ],
+  "ut99_bots": [
+    {
+      "enabled": false,
+      "name": "Archon-Red",
+      "team": 0,
+      "appearance": {
+        "class": "TMale1Bot",
+        "skin": "CommandoSkins.daco",
+        "face": "CommandoSkins.Gorn",
+        "voice": "BotPack.VoiceMaleOne"
+      },
+      "ut99_config": {
+        "jumpy": 1,
+        "favorite_weapon": "Botpack.ShockRifle",
+        "camping": 0.0,
+        "strafing_ability": 50.0,
+        "combat_style": 1.0,
+        "alertness": 50.0,
+        "accuracy": 0.5,
+        "skill": 0.5
+      }
+    },
+    {
+      "enabled": false,
+      "name": "Archon-Blue",
+      "team": 1,
+      "appearance": {
+        "class": "TFemale2Bot",
+        "skin": "SGirlSkins.army",
+        "face": "SGirlSkins.Sara",
+        "voice": "BotPack.VoiceFemaleOne"
+      },
+      "ut99_config": {
+        "jumpy": 0,
+        "favorite_weapon": "Botpack.ShockRifle",
+        "camping": 0.0,
+        "strafing_ability": 50.0,
+        "combat_style": 1.0,
+        "alertness": 50.0,
+        "accuracy": 0.5,
+        "skill": 0.5
+      }
+    },
+    {
+      "enabled": false,
+      "name": "Archon",
+      "team": 0,
+      "appearance": {
+        "class": "TMale1Bot",
+        "skin": "CommandoSkins.goth",
+        "face": "CommandoSkins.Kragoth",
+        "voice": "BotPack.VoiceMaleTwo"
+      },
+      "ut99_config": {
+        "jumpy": 1,
+        "favorite_weapon": "Botpack.ShockRifle",
+        "camping": 0.0,
+        "strafing_ability": 50.0,
+        "combat_style": 1.0,
+        "alertness": 50.0,
+        "accuracy": 0.5,
+        "skill": 0.5
+      }
+    },
+    {
+      "enabled": false,
+      "name": "Tamerlane",
+      "team": 1,
+      "appearance": {
+        "class": "TMale2Bot",
+        "skin": "SoldierSkins.sldr",
+        "face": "SoldierSkins.Johnson",
+        "voice": "BotPack.VoiceMaleOne"
+      },
+      "ut99_config": {
+        "jumpy": 0,
+        "favorite_weapon": "Botpack.PulseGun",
+        "camping": 0.0,
+        "strafing_ability": 40.0,
+        "combat_style": 0.8,
+        "alertness": 40.0,
+        "accuracy": 0.4,
+        "skill": 0.4
+      }
+    }
+  ],
+  "debug_features": [],
+  "debug_sanity_enabled": false,
+  "debug_log_every_n": 60,
+  "debug_log_min_interval_ms": 500,
+  "debug_log_only_on_change": true,
+  "debug_log_change_epsilon": 0.0005,
+  "debug_log_max_lines_per_feature": 200
+}

@@ -1,0 +1,597 @@
+{
+  "map_id" : 6,
+  "map_norm" : {
+    "bounds_min_x" : -4167.01,
+    "bounds_max_x" : 2340.982,
+    "bounds_min_y" : -4236.0,
+    "bounds_max_y" : 1344.0,
+    "bounds_min_z" : -896.0,
+    "bounds_max_z" : 3002.0,
+    "edge" : 0.98,
+    "k" : 3.0
+  },
+  "symmetric" : false,
+  "geodesic_field" : false,
+  "spawn_points" : [
+    {
+      "location" : [
+        256.299835,
+        -77.618301,
+        -215.900116
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -1980.462891,
+        261.339417,
+        -215.900116
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -3157.06958,
+        1129.063477,
+        -215.899841
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        2290.072998,
+        -476.269287,
+        -215.89975
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        1658.537231,
+        -793.909058,
+        -245.89975
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -3813.511475,
+        893.948486,
+        -234.089737
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -1696.387329,
+        -359.844788,
+        136.099243
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -109.238983,
+        400.755676,
+        136.099701
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        345.198822,
+        105.821243,
+        -215.900024
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        608.70697,
+        -945.961914,
+        -247.899994
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -2198.537842,
+        37.916382,
+        -215.900116
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -2486.666504,
+        1027.112427,
+        -235.900116
+      ],
+      "team" : 1
+    }
+  ],
+  "jump_pads" : [ ],
+  "pickups" : [
+    {
+      "type" : "FlakBox",
+      "category" : "ammo",
+      "location" : [
+        -1399.61,
+        62.988,
+        -724.948
+      ]
+    },
+    {
+      "type" : "FlakBox",
+      "category" : "ammo",
+      "location" : [
+        -1338.046,
+        63.456,
+        -724.949
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        -991.171,
+        -419.306,
+        0.1
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        -784.268,
+        -413.433,
+        0.1
+      ]
+    },
+    {
+      "type" : "UT_Eightball",
+      "category" : "weapon",
+      "location" : [
+        -887.325,
+        -418.944,
+        -1.9
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        -615.919,
+        -547.956,
+        -499.902
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        -896.817,
+        -529.429,
+        -499.899
+      ]
+    },
+    {
+      "type" : "UT_BioRifle",
+      "category" : "weapon",
+      "location" : [
+        -886.853,
+        539.267,
+        3.098
+      ]
+    },
+    {
+      "type" : "Armor",
+      "category" : "armor",
+      "location" : [
+        64.802,
+        482.939,
+        -244.899
+      ]
+    },
+    {
+      "type" : "ThighPads",
+      "category" : "armor",
+      "location" : [
+        -1934.958,
+        -363.177,
+        -225.9
+      ]
+    },
+    {
+      "type" : "UT_FlakCannon",
+      "category" : "weapon",
+      "location" : [
+        -786.024,
+        -414.004,
+        -340.899
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -1258.195,
+        420.454,
+        -503.904
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -584.768,
+        433.8,
+        -503.897
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -547.475,
+        -327.323,
+        -503.896
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -1243.555,
+        -312.152,
+        -503.897
+      ]
+    },
+    {
+      "type" : "ShockCore",
+      "category" : "ammo",
+      "location" : [
+        -2499.128,
+        900.605,
+        -233.116
+      ]
+    },
+    {
+      "type" : "ShockCore",
+      "category" : "ammo",
+      "location" : [
+        -2373.262,
+        842.157,
+        -233.118
+      ]
+    },
+    {
+      "type" : "ShockRifle",
+      "category" : "weapon",
+      "location" : [
+        -2425.595,
+        880.362,
+        -247.9
+      ]
+    },
+    {
+      "type" : "Ripper",
+      "category" : "weapon",
+      "location" : [
+        1425.041,
+        -1019.242,
+        -240.087
+      ]
+    },
+    {
+      "type" : "BladeHopper",
+      "category" : "ammo",
+      "location" : [
+        1537.669,
+        -886.215,
+        -246.9
+      ]
+    },
+    {
+      "type" : "BladeHopper",
+      "category" : "ammo",
+      "location" : [
+        1603.459,
+        -974.6,
+        -246.899
+      ]
+    },
+    {
+      "type" : "ShockCore",
+      "category" : "ammo",
+      "location" : [
+        721.096,
+        -776.49,
+        -233.116
+      ]
+    },
+    {
+      "type" : "ShockCore",
+      "category" : "ammo",
+      "location" : [
+        596.608,
+        -715.162,
+        -233.118
+      ]
+    },
+    {
+      "type" : "ShockRifle",
+      "category" : "weapon",
+      "location" : [
+        643.59,
+        -765.267,
+        -247.9
+      ]
+    },
+    {
+      "type" : "Minigun2",
+      "category" : "weapon",
+      "location" : [
+        -4071.012,
+        631.816,
+        -248.899
+      ]
+    },
+    {
+      "type" : "MiniAmmo",
+      "category" : "ammo",
+      "location" : [
+        -3950.762,
+        643.174,
+        -245.9
+      ]
+    },
+    {
+      "type" : "MiniAmmo",
+      "category" : "ammo",
+      "location" : [
+        -4004.214,
+        722.802,
+        -244.9
+      ]
+    }
+  ],
+  "movers" : [
+    {
+      "name" : "Mover1",
+      "subclass" : "Mover",
+      "initial_state" : "TriggerControl",
+      "base_location" : [
+        416.0,
+        -432.0,
+        -144.0
+      ],
+      "base_rotation" : [
+        0,
+        -16384,
+        0
+      ],
+      "key_positions" : [
+        [
+          416.0,
+          -432.0,
+          -144.0
+        ],
+        [
+          536.0,
+          -432.0,
+          -144.0
+        ]
+      ],
+      "platform_bounds_local" : {
+        "min" : [
+          -32.0,
+          -72.0,
+          -112.0
+        ],
+        "max" : [
+          0.0,
+          80.0,
+          120.0
+        ]
+      },
+      "move_time" : 0.75,
+      "stay_open_time" : 4.0,
+      "delay_time" : 0.0,
+      "num_keys" : 2,
+      "glide_type" : "Glide",
+      "encroach_type" : "Return",
+      "bump_type" : "PlayerBump",
+      "tag" : "Reddoor"
+    },
+    {
+      "name" : "Mover2",
+      "subclass" : "Mover",
+      "initial_state" : "TriggerControl",
+      "base_location" : [
+        256.0,
+        -416.0,
+        -144.0
+      ],
+      "base_rotation" : [
+        0,
+        -16384,
+        0
+      ],
+      "key_positions" : [
+        [
+          256.0,
+          -416.0,
+          -144.0
+        ],
+        [
+          136.0,
+          -416.0,
+          -144.0
+        ]
+      ],
+      "platform_bounds_local" : {
+        "min" : [
+          -24.0,
+          -64.0,
+          -112.0
+        ],
+        "max" : [
+          8.0,
+          88.0,
+          120.0
+        ]
+      },
+      "move_time" : 0.75,
+      "stay_open_time" : 4.0,
+      "delay_time" : 0.0,
+      "num_keys" : 2,
+      "glide_type" : "Glide",
+      "encroach_type" : "Return",
+      "bump_type" : "PlayerBump",
+      "tag" : "Reddoor"
+    },
+    {
+      "name" : "AttachMover1",
+      "subclass" : "AttachMover",
+      "initial_state" : "BumpOpenTimed",
+      "base_location" : [
+        -1760.0,
+        -3136.0,
+        1952.0
+      ],
+      "base_rotation" : [
+        0,
+        16384,
+        0
+      ],
+      "key_positions" : [
+        [
+          -1760.0,
+          -3136.0,
+          1952.0
+        ],
+        [
+          -1760.0,
+          -3136.0,
+          1952.0
+        ]
+      ],
+      "platform_bounds_local" : {
+        "min" : [
+          -8.0,
+          -8.0,
+          -8.0
+        ],
+        "max" : [
+          8.0,
+          8.0,
+          8.0
+        ]
+      },
+      "move_time" : 1.0,
+      "stay_open_time" : 4.0,
+      "delay_time" : 0.0,
+      "num_keys" : 2,
+      "glide_type" : "Glide",
+      "encroach_type" : "Return",
+      "bump_type" : "PlayerBump",
+      "tag" : "AttachMover"
+    },
+    {
+      "name" : "Mover0",
+      "subclass" : "Mover",
+      "initial_state" : "TriggerControl",
+      "base_location" : [
+        -2064.0,
+        528.0,
+        -144.0
+      ],
+      "base_rotation" : [
+        0,
+        -16384,
+        0
+      ],
+      "key_positions" : [
+        [
+          -2064.0,
+          528.0,
+          -144.0
+        ],
+        [
+          -1944.0,
+          528.0,
+          -144.0
+        ]
+      ],
+      "platform_bounds_local" : {
+        "min" : [
+          -32.0,
+          -72.0,
+          -112.0
+        ],
+        "max" : [
+          0.0,
+          80.0,
+          120.0
+        ]
+      },
+      "move_time" : 0.75,
+      "stay_open_time" : 4.0,
+      "delay_time" : 0.0,
+      "num_keys" : 2,
+      "glide_type" : "Glide",
+      "encroach_type" : "Return",
+      "bump_type" : "PlayerBump",
+      "tag" : "bluedoor"
+    },
+    {
+      "name" : "Mover3",
+      "subclass" : "Mover",
+      "initial_state" : "TriggerControl",
+      "base_location" : [
+        -2224.0,
+        544.0,
+        -144.0
+      ],
+      "base_rotation" : [
+        0,
+        -16384,
+        0
+      ],
+      "key_positions" : [
+        [
+          -2224.0,
+          544.0,
+          -144.0
+        ],
+        [
+          -2344.0,
+          544.0,
+          -144.0
+        ]
+      ],
+      "platform_bounds_local" : {
+        "min" : [
+          -24.0,
+          -64.0,
+          -112.0
+        ],
+        "max" : [
+          8.0,
+          88.0,
+          120.0
+        ]
+      },
+      "move_time" : 0.75,
+      "stay_open_time" : 4.0,
+      "delay_time" : 0.0,
+      "num_keys" : 2,
+      "glide_type" : "Glide",
+      "encroach_type" : "Return",
+      "bump_type" : "PlayerBump",
+      "tag" : "bluedoor"
+    }
+  ],
+  "elevator_triggers" : [ ]
+}

@@ -1,0 +1,382 @@
+{
+  "map_id" : 11,
+  "map_norm" : {
+    "bounds_min_x" : -1536.0,
+    "bounds_max_x" : 1536.0,
+    "bounds_min_y" : -1536.0,
+    "bounds_max_y" : 1536.0,
+    "bounds_min_z" : -1538.0,
+    "bounds_max_z" : 3072.0,
+    "edge" : 0.98,
+    "k" : 3.0
+  },
+  "symmetric" : true,
+  "geodesic_field" : false,
+  "spawn_points" : [
+    {
+      "location" : [
+        -700.846,
+        -834.321,
+        64.0
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -322.204,
+        -450.911,
+        64.0
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -447.359,
+        -322.375,
+        64.0
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -828.581,
+        -706.189,
+        64.0
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -124.763,
+        -259.114,
+        64.0
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        253.879,
+        124.296,
+        64.0
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        128.725,
+        252.832,
+        64.0
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -252.497,
+        -130.982,
+        64.0
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        451.88,
+        316.821,
+        64.0
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        830.522,
+        700.231,
+        64.0
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        705.367,
+        828.767,
+        64.0
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        324.145,
+        444.953,
+        64.0
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -353.336,
+        -797.858,
+        -471.897
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -798.225,
+        -353.796,
+        -471.897
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        223.067,
+        -222.051,
+        -471.897
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -221.822,
+        222.01,
+        -471.897
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        798.907,
+        354.001,
+        -471.897
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        354.019,
+        798.062,
+        -471.897
+      ],
+      "team" : 0
+    }
+  ],
+  "jump_pads" : [ ],
+  "pickups" : [
+    {
+      "type" : "BioAmmo",
+      "category" : "ammo",
+      "location" : [
+        -832.56,
+        -960.845,
+        -1014.645
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        -764.74,
+        -1023.807,
+        -1009.063
+      ]
+    },
+    {
+      "type" : "BladeHopper",
+      "category" : "ammo",
+      "location" : [
+        -703.818,
+        -1087.201,
+        -1013.582
+      ]
+    },
+    {
+      "type" : "BioAmmo",
+      "category" : "ammo",
+      "location" : [
+        -959.935,
+        -831.016,
+        -1014.645
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        -1020.284,
+        -768.484,
+        -1009.063
+      ]
+    },
+    {
+      "type" : "BladeHopper",
+      "category" : "ammo",
+      "location" : [
+        -1088.244,
+        -703.742,
+        -1013.582
+      ]
+    },
+    {
+      "type" : "BioAmmo",
+      "category" : "ammo",
+      "location" : [
+        -224.028,
+        -351.595,
+        -1014.645
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        -156.208,
+        -414.557,
+        -1009.063
+      ]
+    },
+    {
+      "type" : "BladeHopper",
+      "category" : "ammo",
+      "location" : [
+        -95.286,
+        -477.951,
+        -1013.582
+      ]
+    },
+    {
+      "type" : "BioAmmo",
+      "category" : "ammo",
+      "location" : [
+        -351.403,
+        -221.766,
+        -1014.645
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        -411.752,
+        -159.234,
+        -1009.063
+      ]
+    },
+    {
+      "type" : "BladeHopper",
+      "category" : "ammo",
+      "location" : [
+        -479.712,
+        -94.492,
+        -1013.582
+      ]
+    },
+    {
+      "type" : "BioAmmo",
+      "category" : "ammo",
+      "location" : [
+        224.106,
+        352.084,
+        -1014.645
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        156.285,
+        415.045,
+        -1009.063
+      ]
+    },
+    {
+      "type" : "BladeHopper",
+      "category" : "ammo",
+      "location" : [
+        96.66,
+        478.439,
+        -1013.582
+      ]
+    },
+    {
+      "type" : "BioAmmo",
+      "category" : "ammo",
+      "location" : [
+        351.481,
+        222.256,
+        -1014.645
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        411.831,
+        159.725,
+        -1009.063
+      ]
+    },
+    {
+      "type" : "BladeHopper",
+      "category" : "ammo",
+      "location" : [
+        479.791,
+        94.984,
+        -1013.582
+      ]
+    },
+    {
+      "type" : "BioAmmo",
+      "category" : "ammo",
+      "location" : [
+        832.29,
+        962.141,
+        -1014.645
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        764.469,
+        1025.102,
+        -1009.063
+      ]
+    },
+    {
+      "type" : "BladeHopper",
+      "category" : "ammo",
+      "location" : [
+        704.845,
+        1088.496,
+        -1013.582
+      ]
+    },
+    {
+      "type" : "BioAmmo",
+      "category" : "ammo",
+      "location" : [
+        959.666,
+        832.313,
+        -1014.645
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        1020.015,
+        769.782,
+        -1009.063
+      ]
+    },
+    {
+      "type" : "BladeHopper",
+      "category" : "ammo",
+      "location" : [
+        1087.976,
+        705.04,
+        -1013.582
+      ]
+    }
+  ],
+  "movers" : [ ],
+  "elevator_triggers" : [ ]
+}

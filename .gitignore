@@ -1,0 +1,31 @@
+# IDE & tooling
+.idea/
+*.iml
+.venv/
+
+# Maven build outputs (anchored: only module/root build dirs, not a
+# source package that happens to be named "target")
+/target/
+/*/target/
+java-aiplay/java-aiplay/
+dependency-reduced-pom.xml
+
+# Python caches
+__pycache__/
+*.pyc
+
+# Claude Code
+.claude/
+.claude-memory/
+
+# Secrets — SSH password (resolved by ServerInventory.py). NEVER commit.
+# Distributed to peers by the rsync-based sync-code.sh. See *.example.
+resources/config/secrets.local.json
+
+# Generated files
+cp-launcher.txt
+scripts/workbench/.workbench.pid
+scripts/workbench/workbench.log
+
+# UT99 source code extracted from reference/ut99-source.zip (regenerable; lokaal behouden voor doc references)
+reference/extracted/full/

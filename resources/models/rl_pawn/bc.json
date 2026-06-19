@@ -1,0 +1,32 @@
+{
+  "_doc": "BC pretraining config voor full-joint policy. Multi-head loss: movement direction/binaries + VR Gaussian-NLL op yaw/pitch + fire BCE + target_index CE.",
+
+  "batch_size": 8192,
+  "lr": 0.001414,
+  "weight_decay": 0.0001,
+  "grad_clip_norm": 1.0,
+  "label_smoothing": 0.02,
+  "save_every_steps": 100,
+  "pretrain_steps": 1000,
+  "warmup_steps": 200,
+  "early_stop_patience": 15,
+  "val_split": 0.1,
+  "log_every_steps": 50,
+  "recovery_bucket_patterns": [],
+  "recovery_oversample_factor": 1,
+
+  "_doc_multi_head_loss": "Per-head loss weights. loss = w_movement*movement_loss + w_vr*gaussian_nll(yaw,pitch) + w_fire*(bce(fire)+bce(altFire)) + w_target*ce_confidence_weighted(target_logits, target_label, target_confidence).",
+  "multi_head_loss": {
+    "w_movement": 1.0,
+    "w_vr": 1.0,
+    "w_fire": 0.5,
+    "w_target": 0.5
+  },
+
+  "data_loader": {
+    "num_workers": 2,
+    "persistent_workers": true,
+    "prefetch_factor": 2,
+    "pin_memory": false
+  }
+}

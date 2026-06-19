@@ -1,0 +1,171 @@
+{
+  "map_id" : 12,
+  "map_norm" : {
+    "bounds_min_x" : -1264.0,
+    "bounds_max_x" : 1680.0,
+    "bounds_min_y" : -4144.0,
+    "bounds_max_y" : 1584.0,
+    "bounds_min_z" : -576.0,
+    "bounds_max_z" : 768.0,
+    "edge" : 0.98,
+    "k" : 3.0
+  },
+  "symmetric" : true,
+  "geodesic_field" : false,
+  "spawn_points" : [
+    {
+      "location" : [
+        1114.916,
+        -2691.401,
+        -99.9
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        896.514,
+        -2526.917,
+        -99.9
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -1114.916,
+        131.402,
+        -99.9
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -896.514,
+        -33.083,
+        -99.9
+      ],
+      "team" : 0
+    }
+  ],
+  "jump_pads" : [ ],
+  "pickups" : [
+    {
+      "type" : "FlakBox",
+      "category" : "ammo",
+      "location" : [
+        -257.075,
+        1157.022,
+        -116.9
+      ]
+    },
+    {
+      "type" : "FlakBox",
+      "category" : "ammo",
+      "location" : [
+        256.966,
+        -3710.459,
+        -116.899
+      ]
+    },
+    {
+      "type" : "ShellBox",
+      "category" : "ammo",
+      "location" : [
+        0.362,
+        -1535.98,
+        -244.899
+      ]
+    },
+    {
+      "type" : "ShellBox",
+      "category" : "ammo",
+      "location" : [
+        2.644,
+        -1023.193,
+        -242.82
+      ]
+    },
+    {
+      "type" : "UT_Eightball",
+      "category" : "weapon",
+      "location" : [
+        467.214,
+        347.684,
+        -117.9
+      ]
+    },
+    {
+      "type" : "UT_Eightball",
+      "category" : "weapon",
+      "location" : [
+        -513.848,
+        -2892.66,
+        -117.9
+      ]
+    },
+    {
+      "type" : "UT_FlakCannon",
+      "category" : "weapon",
+      "location" : [
+        793.255,
+        -2931.638,
+        -104.9
+      ]
+    },
+    {
+      "type" : "UT_FlakCannon",
+      "category" : "weapon",
+      "location" : [
+        -801.95,
+        373.362,
+        -104.9
+      ]
+    },
+    {
+      "type" : "Minigun2",
+      "category" : "weapon",
+      "location" : [
+        -0.892,
+        -1266.071,
+        -245.899
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        259.241,
+        1159.096,
+        -101.9
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        -245.285,
+        -3711.121,
+        -101.9
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        0.769,
+        -2203.246,
+        -243.9
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -1.074,
+        -357.288,
+        -243.9
+      ]
+    }
+  ],
+  "movers" : [ ],
+  "elevator_triggers" : [ ]
+}

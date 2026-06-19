@@ -1,0 +1,5 @@
+{
+  "enabled": false,
+  "max_val_loss": 999.0,
+  "max_regression_vs_baseline": 999.0
+}

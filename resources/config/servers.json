@@ -1,0 +1,166 @@
+{
+  "version": 1,
+  "recording_server": "4090",
+  "machines": [
+    {
+      "machine_id": "4090",
+      "hostname": "desktop-4090.fritz.box",
+      "ssh": {
+        "user": "kris"
+      },
+      "capacity": {
+        "gpu_instances": 0,
+        "cpu_instances": 0,
+        "cuda_enabled": true,
+        "jvm_heap_max_mb": 60000
+      },
+      "roles": {
+        "bc_trainer_slots": 1,
+        "sac_trainer_slots": 2,
+        "csv_writer_slots": 4,
+        "bc_trainer_priority": 1
+      },
+      "ports": {
+        "display_base": 50,
+        "web_port_base": 10080,
+        "game_port_base": 7400,
+        "game_port_step": 2,
+        "udp_port_base": 11000,
+        "state_udp_port_base": 11500
+      },
+      "gameplay": {
+        "speed": 1.0,
+        "style": "classic"
+      },
+      "env": {}
+    },
+    {
+      "machine_id": "4070",
+      "hostname": "desktop-4070.fritz.box",
+      "ssh": {
+        "user": "kris"
+      },
+      "capacity": {
+        "gpu_instances": 5,
+        "cpu_instances": 0,
+        "cuda_enabled": true,
+        "jvm_heap_max_mb": 28000
+      },
+      "roles": {
+        "bc_trainer_slots": 1,
+        "sac_trainer_slots": 0,
+        "csv_writer_slots": 4,
+        "bc_trainer_priority": 2
+      },
+      "ports": {
+        "display_base": 20,
+        "web_port_base": 6080,
+        "game_port_base": 7777,
+        "game_port_step": 12,
+        "udp_port_base": 11100,
+        "state_udp_port_base": 11600
+      },
+      "gameplay": {
+        "speed": 1.0,
+        "style": "classic"
+      },
+      "env": {}
+    },
+    {
+      "machine_id": "3070",
+      "hostname": "desktop-3070.fritz.box",
+      "ssh": {
+        "user": "kris"
+      },
+      "capacity": {
+        "gpu_instances": 2,
+        "cpu_instances": 0,
+        "cuda_enabled": true,
+        "jvm_heap_max_mb": 11000
+      },
+      "roles": {
+        "bc_trainer_slots": 1,
+        "sac_trainer_slots": 0,
+        "csv_writer_slots": 2,
+        "bc_trainer_priority": 3
+      },
+      "ports": {
+        "display_base": 10,
+        "web_port_base": 5080,
+        "game_port_base": 7877,
+        "game_port_step": 12,
+        "udp_port_base": 11200,
+        "state_udp_port_base": 11700
+      },
+      "gameplay": {
+        "speed": 1.0,
+        "style": "classic"
+      },
+      "env": {}
+    },
+    {
+      "machine_id": "2070",
+      "hostname": "desktop-2070.fritz.box",
+      "ssh": {
+        "user": "kris"
+      },
+      "capacity": {
+        "gpu_instances": 1,
+        "cpu_instances": 0,
+        "cuda_enabled": true,
+        "jvm_heap_max_mb": 4500
+      },
+      "roles": {
+        "bc_trainer_slots": 0,
+        "sac_trainer_slots": 0,
+        "csv_writer_slots": 0,
+        "bc_trainer_priority": 4
+      },
+      "ports": {
+        "display_base": 40,
+        "web_port_base": 9080,
+        "game_port_base": 7300,
+        "game_port_step": 2,
+        "udp_port_base": 11400,
+        "state_udp_port_base": 11900
+      },
+      "gameplay": {
+        "speed": 1.0,
+        "style": "classic"
+      },
+      "env": {}
+    },
+    {
+      "machine_id": "p15v",
+      "hostname": "LAPTOP-P15v.fritz.box",
+      "ssh": {
+        "user": "kris"
+      },
+      "capacity": {
+        "gpu_instances": 1,
+        "cpu_instances": 0,
+        "cuda_enabled": true,
+        "jvm_heap_max_mb": 13000
+      },
+      "roles": {
+        "bc_trainer_slots": 0,
+        "sac_trainer_slots": 0,
+        "csv_writer_slots": 1,
+        "bc_trainer_priority": 5
+      },
+      "ports": {
+        "display_base": 40,
+        "web_port_base": 7080,
+        "game_port_base": 7200,
+        "game_port_step": 2,
+        "udp_port_base": 11300,
+        "state_udp_port_base": 11800
+      },
+      "gameplay": {
+        "speed": 1.0,
+        "style": "classic"
+      },
+      "env": {}
+    }
+  ]
+}

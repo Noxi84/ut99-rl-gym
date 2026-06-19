@@ -1,0 +1,1002 @@
+{
+  "map_id" : 3,
+  "map_norm" : {
+    "bounds_min_x" : -3088.0,
+    "bounds_max_x" : 4096.0,
+    "bounds_min_y" : -1408.0,
+    "bounds_max_y" : 8064.0,
+    "bounds_min_z" : -288.0,
+    "bounds_max_z" : 684.0,
+    "edge" : 0.98,
+    "k" : 3.0
+  },
+  "symmetric" : false,
+  "geodesic_field" : false,
+  "spawn_points" : [
+    {
+      "location" : [
+        191.468643,
+        -148.937576,
+        40.101181
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -588.629333,
+        6883.194824,
+        40.101181
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -419.558929,
+        6980.966309,
+        40.101494
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -1140.327393,
+        7339.98584,
+        168.099915
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -1141.236084,
+        7717.891602,
+        168.099243
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -2257.834473,
+        7537.220703,
+        168.103851
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -2129.229736,
+        6814.015625,
+        328.090057
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        297.361725,
+        2573.587891,
+        88.099998
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        15.407135,
+        -227.018372,
+        40.099998
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        735.05127,
+        -527.690613,
+        168.100006
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        716.457825,
+        -895.786438,
+        168.100006
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        1831.771484,
+        -688.625122,
+        168.100006
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        1580.710693,
+        -26.33313,
+        328.100006
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        304.057129,
+        5705.882812,
+        168.100159
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -863.642273,
+        522.466431,
+        296.1026
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        886.335327,
+        -137.005463,
+        104.098839
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -657.851135,
+        4303.193848,
+        88.10051
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -913.656372,
+        6559.578613,
+        296.0979
+      ],
+      "team" : 0
+    }
+  ],
+  "jump_pads" : [
+    {
+      "location" : [
+        -2726.634033,
+        6738.897949,
+        107.049927
+      ],
+      "velocity" : [
+        0.0,
+        -200.0,
+        750.0
+      ]
+    },
+    {
+      "location" : [
+        2280.79834,
+        -13.941902,
+        112.100159
+      ],
+      "velocity" : [
+        0.0,
+        200.0,
+        750.0
+      ]
+    },
+    {
+      "location" : [
+        2303.327393,
+        -20.635502,
+        421.052368
+      ],
+      "velocity" : [
+        -1000.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "location" : [
+        -2754.723389,
+        6767.686523,
+        429.961884
+      ],
+      "velocity" : [
+        1000.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "pickups" : [
+    {
+      "type" : "ThighPads",
+      "category" : "armor",
+      "location" : [
+        -327.927,
+        4115.401,
+        -33.9
+      ]
+    },
+    {
+      "type" : "ThighPads",
+      "category" : "armor",
+      "location" : [
+        -122.928,
+        2598.835,
+        -33.9
+      ]
+    },
+    {
+      "type" : "UDamage",
+      "category" : "powerup",
+      "location" : [
+        -196.938,
+        3354.953,
+        214.1
+      ]
+    },
+    {
+      "type" : "EClip",
+      "category" : "ammo",
+      "location" : [
+        467.035,
+        -956.035,
+        68.1
+      ]
+    },
+    {
+      "type" : "EClip",
+      "category" : "ammo",
+      "location" : [
+        499.124,
+        -924.081,
+        68.1
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        1703.277,
+        -884.492,
+        72.1
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        1054.187,
+        37.608,
+        8.102
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        1595.496,
+        469.337,
+        296.099
+      ]
+    },
+    {
+      "type" : "Armor2",
+      "category" : "armor",
+      "location" : [
+        -973.664,
+        335.498,
+        280.061
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        -816.156,
+        2779.541,
+        149.19
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        -813.595,
+        2696.24,
+        149.19
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        -860.996,
+        2735.511,
+        149.19
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        -1225.265,
+        2735.659,
+        149.191
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        -1284.555,
+        2778.066,
+        149.191
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        -1285.925,
+        2690.946,
+        149.191
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -579.701,
+        4648.756,
+        40.101
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -571.322,
+        4846.296,
+        24.101
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -562.865,
+        5044.754,
+        8.101
+      ]
+    },
+    {
+      "type" : "MiniAmmo",
+      "category" : "ammo",
+      "location" : [
+        -324.006,
+        4615.536,
+        11.099
+      ]
+    },
+    {
+      "type" : "MiniAmmo",
+      "category" : "ammo",
+      "location" : [
+        -301.348,
+        4681.648,
+        11.101
+      ]
+    },
+    {
+      "type" : "Minigun2",
+      "category" : "weapon",
+      "location" : [
+        -304.608,
+        4850.27,
+        8.1
+      ]
+    },
+    {
+      "type" : "EClip",
+      "category" : "ammo",
+      "location" : [
+        -918.147,
+        7293.296,
+        68.098
+      ]
+    },
+    {
+      "type" : "EClip",
+      "category" : "ammo",
+      "location" : [
+        -956.643,
+        7269.799,
+        68.102
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -2142.976,
+        7590.972,
+        72.102
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -2166.24,
+        7774.818,
+        72.102
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -2426.205,
+        6750.823,
+        8.101
+      ]
+    },
+    {
+      "type" : "Armor2",
+      "category" : "armor",
+      "location" : [
+        522.826,
+        6400.459,
+        280.061
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        123.154,
+        1670.633,
+        8.101
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        125.59,
+        1881.029,
+        24.102
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        122.262,
+        2061.491,
+        40.099
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        1199.797,
+        -605.902,
+        136.101
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        857.834,
+        4010.799,
+        149.19
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        858.395,
+        3962.499,
+        149.19
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        812.995,
+        3984.77,
+        149.19
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        448.725,
+        3984.917,
+        149.191
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        389.435,
+        4005.325,
+        149.191
+      ]
+    },
+    {
+      "type" : "HealthVial",
+      "category" : "health",
+      "location" : [
+        388.065,
+        3954.204,
+        149.191
+      ]
+    },
+    {
+      "type" : "Ripper",
+      "category" : "weapon",
+      "location" : [
+        -696.348,
+        3916.993,
+        55.102
+      ]
+    },
+    {
+      "type" : "BladeHopper",
+      "category" : "ammo",
+      "location" : [
+        -743.127,
+        3890.033,
+        58.098
+      ]
+    },
+    {
+      "type" : "BladeHopper",
+      "category" : "ammo",
+      "location" : [
+        -614.809,
+        3993.038,
+        58.1
+      ]
+    },
+    {
+      "type" : "SniperRifle",
+      "category" : "weapon",
+      "location" : [
+        -308.22,
+        2628.988,
+        200.102
+      ]
+    },
+    {
+      "type" : "BulletBox",
+      "category" : "ammo",
+      "location" : [
+        -284.787,
+        2706.366,
+        202.098
+      ]
+    },
+    {
+      "type" : "UT_FlakCannon",
+      "category" : "weapon",
+      "location" : [
+        -2358.013,
+        7570.729,
+        151.096
+      ]
+    },
+    {
+      "type" : "FlakAmmo",
+      "category" : "ammo",
+      "location" : [
+        -2333.458,
+        7777.611,
+        139.099
+      ]
+    },
+    {
+      "type" : "FlakAmmo",
+      "category" : "ammo",
+      "location" : [
+        -2330.326,
+        7376.441,
+        139.103
+      ]
+    },
+    {
+      "type" : "UT_Eightball",
+      "category" : "weapon",
+      "location" : [
+        440.71,
+        6267.037,
+        74.1
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        538.595,
+        6345.476,
+        76.1
+      ]
+    },
+    {
+      "type" : "ShockRifle",
+      "category" : "weapon",
+      "location" : [
+        1605.025,
+        704.435,
+        296.102
+      ]
+    },
+    {
+      "type" : "ShockCore",
+      "category" : "ammo",
+      "location" : [
+        1498.681,
+        752.002,
+        308.098
+      ]
+    },
+    {
+      "type" : "ShockCore",
+      "category" : "ammo",
+      "location" : [
+        1696.643,
+        759.649,
+        308.102
+      ]
+    },
+    {
+      "type" : "MiniAmmo",
+      "category" : "ammo",
+      "location" : [
+        -111.468,
+        1835.464,
+        11.099
+      ]
+    },
+    {
+      "type" : "MiniAmmo",
+      "category" : "ammo",
+      "location" : [
+        -154.906,
+        1897.799,
+        11.102
+      ]
+    },
+    {
+      "type" : "Minigun2",
+      "category" : "weapon",
+      "location" : [
+        -132.157,
+        2061.826,
+        8.1
+      ]
+    },
+    {
+      "type" : "UT_Eightball",
+      "category" : "weapon",
+      "location" : [
+        -998.973,
+        439.105,
+        75.098
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        -955.643,
+        380.169,
+        76.1
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        -831.774,
+        458.465,
+        108.099
+      ]
+    },
+    {
+      "type" : "UT_FlakCannon",
+      "category" : "weapon",
+      "location" : [
+        1905.704,
+        -846.854,
+        151.104
+      ]
+    },
+    {
+      "type" : "FlakAmmo",
+      "category" : "ammo",
+      "location" : [
+        1878.29,
+        -661.447,
+        139.1
+      ]
+    },
+    {
+      "type" : "FlakAmmo",
+      "category" : "ammo",
+      "location" : [
+        1884.632,
+        -1052.962,
+        139.094
+      ]
+    },
+    {
+      "type" : "ShockRifle",
+      "category" : "weapon",
+      "location" : [
+        -2050.412,
+        6000.785,
+        296.101
+      ]
+    },
+    {
+      "type" : "ShockCore",
+      "category" : "ammo",
+      "location" : [
+        -1952.785,
+        5959.966,
+        308.102
+      ]
+    },
+    {
+      "type" : "ShockCore",
+      "category" : "ammo",
+      "location" : [
+        -2145.422,
+        5959.969,
+        308.103
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -1516.637,
+        6677.597,
+        8.099
+      ]
+    },
+    {
+      "type" : "Ripper",
+      "category" : "weapon",
+      "location" : [
+        244.027,
+        2769.18,
+        55.1
+      ]
+    },
+    {
+      "type" : "BladeHopper",
+      "category" : "ammo",
+      "location" : [
+        290.71,
+        2850.583,
+        58.099
+      ]
+    },
+    {
+      "type" : "BladeHopper",
+      "category" : "ammo",
+      "location" : [
+        189.058,
+        2709.443,
+        58.104
+      ]
+    },
+    {
+      "type" : "SniperRifle",
+      "category" : "weapon",
+      "location" : [
+        -148.999,
+        4073.785,
+        200.099
+      ]
+    }
+  ],
+  "movers" : [
+    {
+      "name" : "Mover0",
+      "subclass" : "Mover",
+      "initial_state" : "TriggerControl",
+      "base_location" : [
+        0.0,
+        1120.0,
+        96.0
+      ],
+      "key_positions" : [
+        [
+          0.0,
+          1120.0,
+          96.0
+        ],
+        [
+          0.0,
+          1120.0,
+          264.0
+        ]
+      ],
+      "platform_bounds_local" : {
+        "min" : [
+          -112.0,
+          -24.0,
+          -88.0
+        ],
+        "max" : [
+          112.0,
+          40.0,
+          92.0
+        ]
+      },
+      "move_time" : 0.4,
+      "stay_open_time" : 4.0,
+      "delay_time" : 0.0,
+      "num_keys" : 2,
+      "glide_type" : "Glide",
+      "encroach_type" : "Return",
+      "bump_type" : "PlayerBump",
+      "tag" : "access1"
+    },
+    {
+      "name" : "Mover1",
+      "subclass" : "Mover",
+      "initial_state" : "TriggerControl",
+      "base_location" : [
+        848.0,
+        -752.0,
+        224.0
+      ],
+      "base_rotation" : [
+        0,
+        -16384,
+        0
+      ],
+      "key_positions" : [
+        [
+          848.0,
+          -752.0,
+          224.0
+        ],
+        [
+          848.0,
+          -752.0,
+          392.0
+        ]
+      ],
+      "platform_bounds_local" : {
+        "min" : [
+          -112.0,
+          -24.0,
+          -88.0
+        ],
+        "max" : [
+          112.0,
+          40.0,
+          92.0
+        ]
+      },
+      "move_time" : 0.4,
+      "stay_open_time" : 4.0,
+      "delay_time" : 0.0,
+      "num_keys" : 2,
+      "glide_type" : "Glide",
+      "encroach_type" : "Return",
+      "bump_type" : "PlayerBump",
+      "tag" : "access2"
+    },
+    {
+      "name" : "Mover2",
+      "subclass" : "Mover",
+      "initial_state" : "TriggerControl",
+      "base_location" : [
+        -448.0,
+        5600.0,
+        96.0
+      ],
+      "base_rotation" : [
+        0,
+        -32768,
+        0
+      ],
+      "key_positions" : [
+        [
+          -448.0,
+          5600.0,
+          96.0
+        ],
+        [
+          -448.0,
+          5600.0,
+          264.0
+        ]
+      ],
+      "platform_bounds_local" : {
+        "min" : [
+          -112.0,
+          -24.0,
+          -88.0
+        ],
+        "max" : [
+          112.0,
+          40.0,
+          92.0
+        ]
+      },
+      "move_time" : 0.4,
+      "stay_open_time" : 4.0,
+      "delay_time" : 0.0,
+      "num_keys" : 2,
+      "glide_type" : "Glide",
+      "encroach_type" : "Return",
+      "bump_type" : "PlayerBump",
+      "tag" : "access4"
+    },
+    {
+      "name" : "Mover3",
+      "subclass" : "Mover",
+      "initial_state" : "TriggerControl",
+      "base_location" : [
+        -1296.0,
+        7472.0,
+        224.0
+      ],
+      "base_rotation" : [
+        0,
+        -49152,
+        0
+      ],
+      "key_positions" : [
+        [
+          -1296.0,
+          7472.0,
+          224.0
+        ],
+        [
+          -1296.0,
+          7472.0,
+          392.0
+        ]
+      ],
+      "platform_bounds_local" : {
+        "min" : [
+          -112.0,
+          -24.0,
+          -88.0
+        ],
+        "max" : [
+          112.0,
+          40.0,
+          92.0
+        ]
+      },
+      "move_time" : 0.4,
+      "stay_open_time" : 4.0,
+      "delay_time" : 0.0,
+      "num_keys" : 2,
+      "glide_type" : "Glide",
+      "encroach_type" : "Return",
+      "bump_type" : "PlayerBump",
+      "tag" : "access3"
+    }
+  ],
+  "elevator_triggers" : [ ]
+}

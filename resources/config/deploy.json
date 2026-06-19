@@ -1,0 +1,24 @@
+{
+  "hosts": [],
+  "restart-bots": true,
+  "clean-logs": true,
+  "extract-map-bounds": false,
+  "recordings_sync": {
+    "enabled": false
+  },
+  "models": {
+    "rl_pawn": {
+      "clean-experience": false,
+      "prepare-training-csv": false,
+      "keep-existing-model": true,
+      "train-bc": false,
+      "train-sac": true,
+      "reset-sac-baseline": false,
+      "reset-sac-to-bc-baseline": false,
+      "reset-current-to-last-champion": false,
+      "reset-champions": false,
+      "convert-from-jsons": false,
+      "replay-export": false
+    }
+  }
+}

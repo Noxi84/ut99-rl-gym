@@ -1,0 +1,269 @@
+{
+  "_doc": "Canonical UT99 Botpack.Pickup-subclass registry. Single source of truth voor respawn-timings, categorie en T3D class-aliasing. Wordt geladen door (a) ExtractMapBoundsMain bij T3D parse en (b) runtime code dat respawn_seconds nodig heeft voor feature-normalisatie en reward-cap. Geen defaults / fallbacks: een T3D-class die hier ontbreekt wordt door de extract stil overgeslagen, een canonical name die runtime gevraagd wordt maar hier ontbreekt is een hard error.",
+  "semantic_groups": {
+    "_doc": "Slot-grouping voor high-value pickup features in rl_pawn. Elke key is een semantic type (gebruikt in feature-namen als pickup_<semantic>_<slot>_...). De waarde is een lijst van canonical class-namen die deze slot mogen bezetten — eerste die in de map voorkomt wint. Volgorde van listing = prioriteit (bv. Armor2 > Armor want Armor2 = Botpack BigArmor en is de stock CTF-armor).",
+    "shieldbelt":  ["ShieldBelt", "UT_ShieldBelt"],
+    "armor":       ["Armor2", "Armor"],
+    "thighpads":   ["ThighPads"],
+    "amp":         ["UDamage"],
+    "megahealth":  ["SuperHealth"]
+  },
+  "extended_groups": {
+    "_doc": "Pad-A pickup-awareness uitbreiding (mei 2026). Top-K nearest dynamische slot-vulling per categorie, naast de bestaande vaste semantic_groups. Slot 0..K-1 = sorteer-volgorde herberekend per frame. 'heal' sort = effective_heal_norm priority (vials > medbox als hp>=100, anders medbox > vials), daarna afstand. 'weapon' sort = afstand. Feature-ID format: pickupx_<group>_<slot>_<attr>.",
+    "heal": {
+      "_doc": "Health pickups unified. HealthPack en MedBox zijn equivalent (20 hp, cap=100). HealthVial = 5 hp, cap=199. SuperHealth zit al in 'megahealth' semantic_group → niet hier dupliceren.",
+      "canonicals": ["MedBox", "HealthPack", "HealthVial"],
+      "slot_count": 3,
+      "sort_mode": "effective_heal_priority",
+      "heal_amounts": { "MedBox": 20, "HealthPack": 20, "HealthVial": 5 },
+      "heal_caps":    { "MedBox": 100, "HealthPack": 100, "HealthVial": 199 }
+    },
+    "weapon": {
+      "_doc": "Alle wapen-pickups. Bot leert via bot_owns_weapon flag of 't pickup hem een nieuw wapen geeft (high value) of alleen ammo (low value).",
+      "canonicals": [
+        "ImpactHammer", "Enforcer", "UT_BioRifle", "ShockRifle", "Ripper",
+        "Minigun2", "MinigunCannon", "PulseGun", "SniperRifle",
+        "UT_FlakCannon", "UT_Eightball", "Translocator", "WarheadLauncher"
+      ],
+      "slot_count": 3,
+      "sort_mode": "distance"
+    }
+  },
+  "ammo_per_class": {
+    "_doc": "Per stock UT99-ammo-canonical één slot (top-1 nearest). 8 stock classes. Variants (FlakBox/MiniAmmo/RifleShells/ShellBox) excluded — variants triggeren wel pickup-events maar delen geen dedicated feature-slot om aantal features te beperken. 'feeds_weapons' = canonical weapon classes die deze ammo verbruiken (gebruikt voor is_for_curr_weapon flag). BulletBox feeds Minigun + SniperRifle (stock UT99: beide schieten bullets).",
+    "classes": {
+      "EClip":       { "feeds_weapons": ["Enforcer"] },
+      "BulletBox":   { "feeds_weapons": ["Minigun2", "MinigunCannon", "SniperRifle"] },
+      "BioAmmo":     { "feeds_weapons": ["UT_BioRifle"] },
+      "ShockCore":   { "feeds_weapons": ["ShockRifle"] },
+      "BladeHopper": { "feeds_weapons": ["Ripper"] },
+      "PAmmo":       { "feeds_weapons": ["PulseGun"] },
+      "FlakAmmo":    { "feeds_weapons": ["UT_FlakCannon"] },
+      "RocketPack":  { "feeds_weapons": ["UT_Eightball"] }
+    }
+  },
+  "registry": [
+    {
+      "canonical": "HealthVial",
+      "category": "health",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["healthvial"]
+    },
+    {
+      "canonical": "HealthPack",
+      "category": "health",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["healthpack"]
+    },
+    {
+      "canonical": "MedBox",
+      "category": "health",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["medbox"]
+    },
+    {
+      "canonical": "SuperHealth",
+      "category": "health",
+      "respawn_seconds": 180.0,
+      "class_aliases": ["superhealth"]
+    },
+    {
+      "canonical": "ThighPads",
+      "category": "armor",
+      "respawn_seconds": 27.5,
+      "class_aliases": ["thighpads"]
+    },
+    {
+      "canonical": "Armor",
+      "category": "armor",
+      "respawn_seconds": 27.5,
+      "class_aliases": ["armor"]
+    },
+    {
+      "canonical": "Armor2",
+      "category": "armor",
+      "respawn_seconds": 27.5,
+      "class_aliases": ["armor2"]
+    },
+    {
+      "canonical": "ShieldBelt",
+      "category": "armor",
+      "respawn_seconds": 60.0,
+      "class_aliases": ["shieldbelt"]
+    },
+    {
+      "canonical": "UT_ShieldBelt",
+      "category": "armor",
+      "respawn_seconds": 60.0,
+      "class_aliases": ["ut_shieldbelt"]
+    },
+    {
+      "canonical": "UDamage",
+      "category": "powerup",
+      "respawn_seconds": 120.0,
+      "class_aliases": ["udamage"]
+    },
+    {
+      "canonical": "UT_Invisibility",
+      "category": "powerup",
+      "respawn_seconds": 120.0,
+      "class_aliases": ["ut_invisibility"]
+    },
+    {
+      "canonical": "UT_JumpBoots",
+      "category": "powerup",
+      "respawn_seconds": 60.0,
+      "class_aliases": ["ut_jumpboots"]
+    },
+    {
+      "canonical": "ImpactHammer",
+      "category": "weapon",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["impacthammer"]
+    },
+    {
+      "canonical": "Enforcer",
+      "category": "weapon",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["enforcer"]
+    },
+    {
+      "canonical": "UT_BioRifle",
+      "category": "weapon",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["ut_biorifle", "gesbiorifle"]
+    },
+    {
+      "canonical": "ShockRifle",
+      "category": "weapon",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["shockrifle"]
+    },
+    {
+      "canonical": "Ripper",
+      "category": "weapon",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["ripper"]
+    },
+    {
+      "canonical": "Minigun2",
+      "category": "weapon",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["minigun2"]
+    },
+    {
+      "canonical": "PulseGun",
+      "category": "weapon",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["pulsegun"]
+    },
+    {
+      "canonical": "SniperRifle",
+      "category": "weapon",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["sniperrifle"]
+    },
+    {
+      "canonical": "UT_FlakCannon",
+      "category": "weapon",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["ut_flakcannon"]
+    },
+    {
+      "canonical": "UT_Eightball",
+      "category": "weapon",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["ut_eightball", "eightball"]
+    },
+    {
+      "canonical": "MinigunCannon",
+      "category": "weapon",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["miniguncannon"]
+    },
+    {
+      "canonical": "WarheadLauncher",
+      "category": "weapon",
+      "respawn_seconds": 60.0,
+      "class_aliases": ["warheadlauncher"]
+    },
+    {
+      "canonical": "Translocator",
+      "category": "weapon",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["translocator"]
+    },
+    {
+      "canonical": "EClip",
+      "category": "ammo",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["eclip"]
+    },
+    {
+      "canonical": "BulletBox",
+      "category": "ammo",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["bulletbox"]
+    },
+    {
+      "canonical": "ShellBox",
+      "category": "ammo",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["shellbox"]
+    },
+    {
+      "canonical": "BioAmmo",
+      "category": "ammo",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["bioammo"]
+    },
+    {
+      "canonical": "ShockCore",
+      "category": "ammo",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["shockcore"]
+    },
+    {
+      "canonical": "BladeHopper",
+      "category": "ammo",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["bladehopper"]
+    },
+    {
+      "canonical": "MiniAmmo",
+      "category": "ammo",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["miniammo"]
+    },
+    {
+      "canonical": "PAmmo",
+      "category": "ammo",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["pammo"]
+    },
+    {
+      "canonical": "RifleShells",
+      "category": "ammo",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["rifleshells"]
+    },
+    {
+      "canonical": "FlakAmmo",
+      "category": "ammo",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["flakammo"]
+    },
+    {
+      "canonical": "FlakBox",
+      "category": "ammo",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["flakbox"]
+    },
+    {
+      "canonical": "RocketPack",
+      "category": "ammo",
+      "respawn_seconds": 30.0,
+      "class_aliases": ["rocketpack", "rocketcan"]
+    }
+  ]
+}

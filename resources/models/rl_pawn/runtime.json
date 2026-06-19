@@ -1,0 +1,10 @@
+{
+  "_doc": "Full-joint inference frequency: 30 Hz. Movement intent is held by CommandController between ticks; movement quality is guarded by promotion KPIs before rollout.",
+  "_doc_target_commitment_lock_ticks": "Aantal ticks dat de target_index sticky blijft nadat target_head zijn argmax-keuze publiceert (vr-shooting-sac-merge.md sectie 4.3). 12 ticks ≈ 400ms @ 30 Hz — voldoende om aim-swing-tussen-enemies te voorkomen tijdens parallel-heads tick-synchroon target/aim emergence. Geen silent default — CLAUDE.md no-fallback preference; RLPawnModelSpec.loadCommitmentLockTicks crasht bij missing.",
+  "prediction_fps": 30,
+  "target_commitment_lock_ticks": 12,
+  "dodge_cooldown_ms": 0,
+  "idle_duration_window_ms": 5000,
+  "idle_enter_threshold": 0.65,
+  "idle_exit_threshold": 0.5
+}

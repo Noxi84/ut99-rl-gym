@@ -1,0 +1,397 @@
+{
+  "map_id" : 8,
+  "map_norm" : {
+    "bounds_min_x" : -1529.0,
+    "bounds_max_x" : 10272.0,
+    "bounds_min_y" : -3232.0,
+    "bounds_max_y" : 6112.0,
+    "bounds_min_z" : -176.0,
+    "bounds_max_z" : 2080.0,
+    "edge" : 0.98,
+    "k" : 3.0
+  },
+  "symmetric" : true,
+  "geodesic_field" : false,
+  "spawn_points" : [
+    {
+      "location" : [
+        -1223.049,
+        2505.039,
+        104.533
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -1220.849,
+        2128.574,
+        104.533
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -1235.357,
+        1732.712,
+        104.533
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        1243.839,
+        1779.898,
+        97.916
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        1246.072,
+        2150.814,
+        102.018
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        1248.089,
+        2511.472,
+        105.437
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -1242.899,
+        -1735.422,
+        100.309
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -1242.472,
+        -2122.629,
+        101.97
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -1243.125,
+        -2524.67,
+        83.893
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        1193.269,
+        -2462.06,
+        141.893
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        1224.71,
+        -2111.801,
+        124.27
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        1238.999,
+        -1745.292,
+        134.309
+      ],
+      "team" : 1
+    }
+  ],
+  "jump_pads" : [ ],
+  "pickups" : [
+    {
+      "type" : "UT_Eightball",
+      "category" : "weapon",
+      "location" : [
+        657.056,
+        -2720.442,
+        8.0
+      ]
+    },
+    {
+      "type" : "ShockRifle",
+      "category" : "weapon",
+      "location" : [
+        -720.0,
+        -2712.0,
+        8.0
+      ]
+    },
+    {
+      "type" : "ShockCore",
+      "category" : "ammo",
+      "location" : [
+        -828.316,
+        -2712.198,
+        24.0
+      ]
+    },
+    {
+      "type" : "ShockCore",
+      "category" : "ammo",
+      "location" : [
+        -618.795,
+        -2714.128,
+        24.0
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        553.718,
+        -2719.837,
+        16.0
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        796.722,
+        -2724.484,
+        16.0
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        -784.767,
+        2706.633,
+        8.817
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        -575.313,
+        2704.779,
+        8.817
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        -1091.651,
+        561.883,
+        8.818
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        -1081.01,
+        -581.051,
+        8.819
+      ]
+    },
+    {
+      "type" : "ShockCore",
+      "category" : "ammo",
+      "location" : [
+        -1155.0,
+        -523.0,
+        17.0
+      ]
+    },
+    {
+      "type" : "ShockCore",
+      "category" : "ammo",
+      "location" : [
+        -1172.0,
+        512.0,
+        17.0
+      ]
+    },
+    {
+      "type" : "ShockRifle",
+      "category" : "weapon",
+      "location" : [
+        747.576,
+        2703.833,
+        5.0
+      ]
+    },
+    {
+      "type" : "UT_Eightball",
+      "category" : "weapon",
+      "location" : [
+        -690.636,
+        2702.628,
+        7.0
+      ]
+    },
+    {
+      "type" : "ShockCore",
+      "category" : "ammo",
+      "location" : [
+        634.581,
+        2705.604,
+        17.0
+      ]
+    },
+    {
+      "type" : "ShockCore",
+      "category" : "ammo",
+      "location" : [
+        861.904,
+        2705.153,
+        17.0
+      ]
+    },
+    {
+      "type" : "HealthPack",
+      "category" : "health",
+      "location" : [
+        -3.213,
+        1.322,
+        -120.479
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -989.658,
+        -1329.714,
+        4.816
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -988.698,
+        -1244.833,
+        4.818
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        991.385,
+        -1326.86,
+        4.819
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        990.956,
+        -1248.361,
+        4.819
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        988.022,
+        1324.858,
+        4.822
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        985.995,
+        1243.74,
+        4.816
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -990.009,
+        1328.229,
+        4.815
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -992.522,
+        1244.058,
+        4.815
+      ]
+    },
+    {
+      "type" : "UT_ShieldBelt",
+      "category" : "armor",
+      "location" : [
+        -1134.767,
+        1.609,
+        11.819
+      ]
+    },
+    {
+      "type" : "WarheadLauncher",
+      "category" : "weapon",
+      "location" : [
+        -1479.0,
+        5.0,
+        664.0
+      ]
+    },
+    {
+      "type" : "UDamage",
+      "category" : "powerup",
+      "location" : [
+        1460.0,
+        -5.0,
+        314.0
+      ]
+    },
+    {
+      "type" : "UT_FlakCannon",
+      "category" : "weapon",
+      "location" : [
+        1152.755,
+        5.022,
+        17.715
+      ]
+    },
+    {
+      "type" : "FlakAmmo",
+      "category" : "ammo",
+      "location" : [
+        1154.73,
+        105.004,
+        6.645
+      ]
+    },
+    {
+      "type" : "FlakAmmo",
+      "category" : "ammo",
+      "location" : [
+        1154.119,
+        -106.593,
+        6.548
+      ]
+    }
+  ],
+  "movers" : [ ],
+  "elevator_triggers" : [ ]
+}

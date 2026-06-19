@@ -1,0 +1,19 @@
+{
+  "decoupled_movement_flag_score": null,
+  "decoupled_vr_shots_on_target_rate": null,
+  "decoupled_shooting_combat_score": null,
+  "measurement_window_minutes": 5,
+  "measurement_window_count": 10,
+  "measurement_date": "2026-06-10",
+  "measurement_git_sha": "null-reset-map-switch-ctf-face-2026-06-10",
+  "_reset_note": {
+    "reset_at": "2026-06-10T19:20",
+    "source": "MANUAL_NULL_RESET",
+    "previous_baseline_on_trainer": {
+      "decoupled_shooting_combat_score": 9.768,
+      "decoupled_vr_shots_on_target_rate": 994.844,
+      "decoupled_movement_flag_score": 8.482
+    },
+    "note": "Map-switch CTF-AndAction (klein) -> CTF-Face (groot, Facing Worlds). De trainer-baseline (combat 9.768 / aim 994.8 / movement 8.48) is geijkt op de kleine map; de policy moet de veel grotere map ~van scratch leren, dus elke cyclus leest combat~0 (ratio<0.7) => rollback-LUS tegen het leerdoel in (cycle 2 rollback 18:50). Null-reset -> placeholder-promote (1.0) her-ankert het ijkpunt op het CTF-Face-niveau bij de eerste voldoende-data eval (DUAL_KPI_BASELINE_INITIAL_SET). Daarna promoot de policy normaal vanaf het nieuwe-map-niveau. ALLEEN de SAC-trainer herstarten (train-sac.sh rl_pawn op 4090); bots blijven draaien zodat cycle 1 niet met lege/herstart-matches vervuilt. Lokale waarden waren al 7.217/835/6.826 (06-06 reset, niet terug-gesynct); de trainer-waarden hierboven zijn wat actief rollbackte."
+  }
+}

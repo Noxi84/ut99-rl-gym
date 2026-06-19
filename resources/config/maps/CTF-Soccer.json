@@ -1,0 +1,911 @@
+{
+  "map_id" : 10,
+  "map_norm" : {
+    "bounds_min_x" : -6144.0,
+    "bounds_max_x" : 7168.0,
+    "bounds_min_y" : -5120.0,
+    "bounds_max_y" : 6144.0,
+    "bounds_min_z" : -3072.0,
+    "bounds_max_z" : 4096.0,
+    "edge" : 0.98,
+    "k" : 3.0
+  },
+  "symmetric" : false,
+  "geodesic_field" : false,
+  "spawn_points" : [
+    {
+      "location" : [
+        4736.0,
+        -64.0,
+        32.0
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        4736.0,
+        64.0,
+        32.0
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        6080.0,
+        -128.0,
+        -256.0
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        6080.0,
+        128.0,
+        -256.0
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        1280.0,
+        -3712.0,
+        32.0
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        1152.0,
+        -5056.0,
+        -256.0
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        1408.0,
+        -5056.0,
+        -256.0
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        1152.0,
+        5056.0,
+        -256.0
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        1280.0,
+        3712.0,
+        32.0
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        1408.0,
+        5056.0,
+        -256.0
+      ],
+      "team" : 0
+    },
+    {
+      "location" : [
+        -4736.0,
+        -64.0,
+        32.0
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -4736.0,
+        64.0,
+        32.0
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -6080.0,
+        127.991,
+        -256.0
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -6079.996,
+        -128.009,
+        -256.0
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -1280.0,
+        -3712.0,
+        32.0
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -1408.0,
+        -5056.0,
+        -256.0
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -1152.0,
+        -5056.0,
+        -256.0
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -1280.008,
+        3712.0,
+        32.0
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -1152.007,
+        5056.0,
+        -256.0
+      ],
+      "team" : 1
+    },
+    {
+      "location" : [
+        -1408.008,
+        5056.0,
+        -256.0
+      ],
+      "team" : 1
+    }
+  ],
+  "jump_pads" : [ ],
+  "pickups" : [
+    {
+      "type" : "MinigunCannon",
+      "category" : "weapon",
+      "location" : [
+        1280.0,
+        -5056.0,
+        -268.0
+      ]
+    },
+    {
+      "type" : "MinigunCannon",
+      "category" : "weapon",
+      "location" : [
+        6080.0,
+        0.0,
+        -268.0
+      ]
+    },
+    {
+      "type" : "MinigunCannon",
+      "category" : "weapon",
+      "location" : [
+        1280.0,
+        5056.0,
+        -268.0
+      ]
+    },
+    {
+      "type" : "MinigunCannon",
+      "category" : "weapon",
+      "location" : [
+        -6080.0,
+        0.0,
+        -268.0
+      ]
+    },
+    {
+      "type" : "MinigunCannon",
+      "category" : "weapon",
+      "location" : [
+        -1280.0,
+        -5056.0,
+        -268.0
+      ]
+    },
+    {
+      "type" : "MinigunCannon",
+      "category" : "weapon",
+      "location" : [
+        -1280.0,
+        5056.0,
+        -268.0
+      ]
+    },
+    {
+      "type" : "WarheadLauncher",
+      "category" : "weapon",
+      "location" : [
+        0.0,
+        0.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "HealthPack",
+      "category" : "health",
+      "location" : [
+        2928.0,
+        0.0,
+        20.0
+      ]
+    },
+    {
+      "type" : "HealthPack",
+      "category" : "health",
+      "location" : [
+        -2928.0,
+        0.0,
+        20.0
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        512.0,
+        1024.0,
+        8.0
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        1536.0,
+        512.0,
+        8.0
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        1024.0,
+        2048.0,
+        8.0
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        2304.0,
+        2304.0,
+        8.0
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        2600.0,
+        1200.0,
+        8.0
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        512.0,
+        -1024.0,
+        8.0
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        1536.0,
+        -512.0,
+        8.0
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        1024.0,
+        -2048.0,
+        8.0
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        2304.0,
+        -2304.0,
+        8.0
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        2600.0,
+        -1200.0,
+        8.0
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -512.0,
+        -1024.0,
+        8.0
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -1536.0,
+        -512.0,
+        8.0
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -1024.0,
+        -2048.0,
+        8.0
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -2304.0,
+        -2304.0,
+        8.0
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -2600.0,
+        -1200.0,
+        8.0
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -512.0,
+        1024.0,
+        8.0
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -1536.0,
+        512.0,
+        8.0
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -1024.0,
+        2048.0,
+        8.0
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -2304.0,
+        2304.0,
+        8.0
+      ]
+    },
+    {
+      "type" : "MedBox",
+      "category" : "health",
+      "location" : [
+        -2600.0,
+        1200.0,
+        8.0
+      ]
+    },
+    {
+      "type" : "SniperRifle",
+      "category" : "weapon",
+      "location" : [
+        4160.0,
+        3136.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "UT_BioRifle",
+      "category" : "weapon",
+      "location" : [
+        4736.0,
+        128.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "ShockRifle",
+      "category" : "weapon",
+      "location" : [
+        1152.0,
+        -3712.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "Ripper",
+      "category" : "weapon",
+      "location" : [
+        1152.0,
+        3712.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "PulseGun",
+      "category" : "weapon",
+      "location" : [
+        1408.0,
+        -3712.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "UT_FlakCannon",
+      "category" : "weapon",
+      "location" : [
+        1408.0,
+        3712.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "Minigun2",
+      "category" : "weapon",
+      "location" : [
+        4160.0,
+        -3136.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "UT_Eightball",
+      "category" : "weapon",
+      "location" : [
+        4736.0,
+        -128.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "Armor2",
+      "category" : "armor",
+      "location" : [
+        1280.0,
+        -3264.0,
+        34.0
+      ]
+    },
+    {
+      "type" : "UT_JumpBoots",
+      "category" : "powerup",
+      "location" : [
+        4288.0,
+        0.0,
+        24.0
+      ]
+    },
+    {
+      "type" : "SniperRifle",
+      "category" : "weapon",
+      "location" : [
+        -4160.0,
+        -3216.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "UT_BioRifle",
+      "category" : "weapon",
+      "location" : [
+        -4726.0,
+        -128.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "ShockRifle",
+      "category" : "weapon",
+      "location" : [
+        -1152.0,
+        3712.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "Ripper",
+      "category" : "weapon",
+      "location" : [
+        -1152.0,
+        -3712.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "PulseGun",
+      "category" : "weapon",
+      "location" : [
+        -1408.0,
+        3712.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "UT_FlakCannon",
+      "category" : "weapon",
+      "location" : [
+        -1408.0,
+        -3712.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "Minigun2",
+      "category" : "weapon",
+      "location" : [
+        -4160.0,
+        3136.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "UT_Eightball",
+      "category" : "weapon",
+      "location" : [
+        -4726.0,
+        128.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "Armor2",
+      "category" : "armor",
+      "location" : [
+        -1280.016,
+        3263.99,
+        34.0
+      ]
+    },
+    {
+      "type" : "UT_JumpBoots",
+      "category" : "powerup",
+      "location" : [
+        -4287.997,
+        -0.023,
+        24.0
+      ]
+    },
+    {
+      "type" : "BladeHopper",
+      "category" : "ammo",
+      "location" : [
+        2048.0,
+        -3456.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "ShockCore",
+      "category" : "ammo",
+      "location" : [
+        512.0,
+        -3456.0,
+        38.0
+      ]
+    },
+    {
+      "type" : "PAmmo",
+      "category" : "ammo",
+      "location" : [
+        512.0,
+        3456.0,
+        28.0
+      ]
+    },
+    {
+      "type" : "FlakAmmo",
+      "category" : "ammo",
+      "location" : [
+        2048.0,
+        3456.0,
+        26.0
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        4480.0,
+        -2048.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "BulletBox",
+      "category" : "ammo",
+      "location" : [
+        4480.0,
+        1024.0,
+        22.0
+      ]
+    },
+    {
+      "type" : "BioAmmo",
+      "category" : "ammo",
+      "location" : [
+        4480.0,
+        -1024.0,
+        24.0
+      ]
+    },
+    {
+      "type" : "MiniAmmo",
+      "category" : "ammo",
+      "location" : [
+        4480.0,
+        2048.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "FlakAmmo",
+      "category" : "ammo",
+      "location" : [
+        2560.0,
+        -3456.0,
+        26.0
+      ]
+    },
+    {
+      "type" : "PAmmo",
+      "category" : "ammo",
+      "location" : [
+        3072.0,
+        -3456.0,
+        28.0
+      ]
+    },
+    {
+      "type" : "BladeHopper",
+      "category" : "ammo",
+      "location" : [
+        2560.0,
+        3456.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "ShockCore",
+      "category" : "ammo",
+      "location" : [
+        3072.0,
+        3456.0,
+        38.0
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        3584.0,
+        -3456.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "BulletBox",
+      "category" : "ammo",
+      "location" : [
+        4480.0,
+        -1536.0,
+        22.0
+      ]
+    },
+    {
+      "type" : "BioAmmo",
+      "category" : "ammo",
+      "location" : [
+        4480.0,
+        1536.0,
+        24.0
+      ]
+    },
+    {
+      "type" : "MiniAmmo",
+      "category" : "ammo",
+      "location" : [
+        3584.0,
+        3456.0,
+        32.0
+      ]
+    },
+    {
+      "type" : "BladeHopper",
+      "category" : "ammo",
+      "location" : [
+        -2047.995,
+        3455.984,
+        32.0
+      ]
+    },
+    {
+      "type" : "ShockCore",
+      "category" : "ammo",
+      "location" : [
+        -511.996,
+        3455.998,
+        38.0
+      ]
+    },
+    {
+      "type" : "PAmmo",
+      "category" : "ammo",
+      "location" : [
+        -511.929,
+        -3455.989,
+        28.0
+      ]
+    },
+    {
+      "type" : "FlakAmmo",
+      "category" : "ammo",
+      "location" : [
+        -2047.926,
+        -3456.004,
+        26.0
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        -4479.977,
+        2047.962,
+        32.0
+      ]
+    },
+    {
+      "type" : "BulletBox",
+      "category" : "ammo",
+      "location" : [
+        -4479.947,
+        -1024.032,
+        22.0
+      ]
+    },
+    {
+      "type" : "BioAmmo",
+      "category" : "ammo",
+      "location" : [
+        -4479.964,
+        1023.965,
+        24.0
+      ]
+    },
+    {
+      "type" : "MiniAmmo",
+      "category" : "ammo",
+      "location" : [
+        -4479.937,
+        -2048.035,
+        32.0
+      ]
+    },
+    {
+      "type" : "FlakAmmo",
+      "category" : "ammo",
+      "location" : [
+        -2559.993,
+        3455.979,
+        26.0
+      ]
+    },
+    {
+      "type" : "PAmmo",
+      "category" : "ammo",
+      "location" : [
+        -3071.993,
+        3455.973,
+        28.0
+      ]
+    },
+    {
+      "type" : "BladeHopper",
+      "category" : "ammo",
+      "location" : [
+        -2559.926,
+        -3456.009,
+        32.0
+      ]
+    },
+    {
+      "type" : "ShockCore",
+      "category" : "ammo",
+      "location" : [
+        -3071.927,
+        -3456.016,
+        38.0
+      ]
+    },
+    {
+      "type" : "RocketPack",
+      "category" : "ammo",
+      "location" : [
+        -3583.992,
+        3455.968,
+        32.0
+      ]
+    },
+    {
+      "type" : "BulletBox",
+      "category" : "ammo",
+      "location" : [
+        -4479.968,
+        1535.964,
+        22.0
+      ]
+    },
+    {
+      "type" : "BioAmmo",
+      "category" : "ammo",
+      "location" : [
+        -4479.945,
+        -1536.032,
+        24.0
+      ]
+    },
+    {
+      "type" : "MiniAmmo",
+      "category" : "ammo",
+      "location" : [
+        -3583.925,
+        -3456.018,
+        32.0
+      ]
+    }
+  ],
+  "movers" : [ ],
+  "elevator_triggers" : [ ]
+}
